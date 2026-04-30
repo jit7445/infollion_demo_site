@@ -52,27 +52,31 @@ export const TeamAssemblyIllustration = () => {
         @keyframes float3 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
 
         .piece { opacity: 0; will-change: transform, opacity; }
-        .shelf { animation: slideFromLeft 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.4s forwards; }
-        .chart-area { animation: dropFromTop 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.5s forwards; }
-        .calendar { animation: slideFromRight 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.55s forwards; }
-        .window-frame { animation: slideFromRight 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.6s forwards; }
-        .desk { animation: riseFromBottom 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.65s forwards; }
-        .plant { animation: riseFromBottom 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.7s forwards; }
+        .is-visible .shelf { animation: slideFromLeft 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.4s forwards; }
+        .is-visible .chart-area { animation: dropFromTop 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.5s forwards; }
+        .is-visible .calendar { animation: slideFromRight 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.55s forwards; }
+        .is-visible .window-frame { animation: slideFromRight 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.6s forwards; }
+        .is-visible .desk { animation: riseFromBottom 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.65s forwards; }
+        .is-visible .plant { animation: riseFromBottom 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.7s forwards; }
         
-        .char-1 { animation: charEntry1 0.9s cubic-bezier(0.34,1.56,0.64,1) 0.75s forwards, float1 3s ease-in-out 2.2s infinite; }
-        .char-2 { animation: charEntry2 0.9s cubic-bezier(0.34,1.56,0.64,1) 0.85s forwards, float2 3.4s ease-in-out 2.4s infinite; }
-        .char-3 { animation: charEntry3 0.9s cubic-bezier(0.34,1.56,0.64,1) 0.95s forwards, float3 2.8s ease-in-out 2.6s infinite; }
-        .char-4 { animation: charEntry4 0.9s cubic-bezier(0.34,1.56,0.64,1) 1.05s forwards; }
-        .char-5 { animation: charEntry5 0.9s cubic-bezier(0.34,1.56,0.64,1) 1.15s forwards; }
-        .char-6 { animation: charEntry6 0.9s cubic-bezier(0.34,1.56,0.64,1) 1.25s forwards; }
-        .char-7 { animation: charEntry7 0.9s cubic-bezier(0.34,1.56,0.64,1) 1.35s forwards; }
+        .is-visible .char-1 { animation: charEntry1 0.9s cubic-bezier(0.34,1.56,0.64,1) 0.75s forwards, float1 3s ease-in-out 2.2s infinite; }
+        .is-visible .char-2 { animation: charEntry2 0.9s cubic-bezier(0.34,1.56,0.64,1) 0.85s forwards, float2 3.4s ease-in-out 2.4s infinite; }
+        .is-visible .char-3 { animation: charEntry3 0.9s cubic-bezier(0.34,1.56,0.64,1) 0.95s forwards, float3 2.8s ease-in-out 2.6s infinite; }
+        .is-visible .char-4 { animation: charEntry4 0.9s cubic-bezier(0.34,1.56,0.64,1) 1.05s forwards; }
+        .is-visible .char-5 { animation: charEntry5 0.9s cubic-bezier(0.34,1.56,0.64,1) 1.15s forwards; }
+        .is-visible .char-6 { animation: charEntry6 0.9s cubic-bezier(0.34,1.56,0.64,1) 1.25s forwards; }
+        .is-visible .char-7 { animation: charEntry7 0.9s cubic-bezier(0.34,1.56,0.64,1) 1.35s forwards; }
         
-        .bubble-like { animation: popIn 0.5s cubic-bezier(0.34,1.8,0.64,1) 1.6s forwards; }
+        .is-visible .bubble-like { animation: popIn 0.5s cubic-bezier(0.34,1.8,0.64,1) 1.6s forwards; }
       `}</style>
 
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        onViewportEnter={(entry) => {
+          entry?.target.classList.add("is-visible");
+        }}
         className="relative w-full h-full flex items-center justify-center"
       >
         <svg viewBox="0 0 820 480" className="w-full h-full max-h-full relative z-10 drop-shadow-2xl">

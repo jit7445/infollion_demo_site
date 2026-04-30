@@ -6,6 +6,15 @@ import { motion } from "motion/react";
 export function ResearchIllustration() {
   return (
     <div className="relative w-full h-full flex items-center justify-center">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        onViewportEnter={(entry) => {
+          entry?.target.parentElement?.querySelector('svg')?.classList.add("is-visible");
+        }}
+        className="absolute inset-0 pointer-events-none"
+      />
       <svg width="100%" viewBox="0 0 680 580" role="img" xmlns="http://www.w3.org/2000/svg" className="w-full h-full max-h-full relative z-10 drop-shadow-2xl">
         <title>Two professionals reviewing analytics dashboards</title>
         <desc>Animated illustration of two people standing in front of large analytics screens with charts, graphs and donut charts. Each element assembles smoothly into the scene.</desc>
@@ -37,12 +46,17 @@ export function ResearchIllustration() {
               .hbar{fill:#d0ead8;stroke:none}
               .shadow-feet{fill:#c8f0d8;opacity:.5}
 
-              .fade-in{opacity:0;animation:fadeIn .5s ease forwards}
-              .slide-up{opacity:0;animation:slideUp .6s ease forwards}
-              .slide-right{opacity:0;animation:slideRight .6s ease forwards}
-              .slide-left{opacity:0;animation:slideLeft .6s ease forwards}
-              .scale-in{opacity:0;animation:scaleIn .5s ease forwards}
-              .draw-line{stroke-dashoffset:300;animation:drawLine 1s ease forwards}
+              .fade-in{opacity:0;}
+              .is-visible .fade-in{animation:fadeIn .5s ease forwards}
+              .slide-up{opacity:0;}
+              .is-visible .slide-up{animation:slideUp .6s ease forwards}
+              .slide-right{opacity:0;}
+              .is-visible .slide-right{animation:slideRight .6s ease forwards}
+              .slide-left{opacity:0;}
+              .is-visible .slide-left{animation:slideLeft .6s ease forwards}
+              .scale-in{opacity:0;}
+              .is-visible .scale-in{animation:scaleIn .5s ease forwards}
+              .is-visible .draw-line{stroke-dashoffset:300;animation:drawLine 1s ease forwards}
 
               @keyframes fadeIn{to{opacity:1}}
               @keyframes slideUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}

@@ -6,7 +6,8 @@ export const AssemblingInvestmentIllustration = () => {
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.8 }}
       className="w-full h-full flex items-center justify-center"
     >
@@ -17,13 +18,12 @@ export const AssemblingInvestmentIllustration = () => {
             .anim-arrow  { animation: arrowPulse 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
             .anim-gear1  { animation: spin 9s linear infinite; transform-box: fill-box; transform-origin: center; }
             .anim-gear2  { animation: spin2 6.5s linear infinite; transform-box: fill-box; transform-origin: center; }
-            .anim-coinL  { animation: coinBob 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-            .anim-coinR  { animation: coinBob 2.6s ease-in-out 0.9s infinite; transform-box: fill-box; transform-origin: center; }
+            .anim-coinL  { animation: float 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+            .anim-coinR  { animation: float 2.6s ease-in-out 0.9s infinite; transform-box: fill-box; transform-origin: center; }
             @keyframes float      { 0%,100%{transform:translateY(0)}    50%{transform:translateY(-7px)} }
             @keyframes arrowPulse { 0%,100%{transform:translate(0,0)}   50%{transform:translate(5px,-5px)} }
             @keyframes spin       { from{transform:rotate(0deg)}         to{transform:rotate(360deg)} }
             @keyframes spin2      { from{transform:rotate(0deg)}         to{transform:rotate(-360deg)} }
-            @keyframes coinBob    { 0%,100%{transform:translateY(0)}    50%{transform:translateY(-5px)} }
           `}</style>
           <linearGradient id="arrowGrad" x1="0" y1="1" x2="1" y2="0">
             <stop offset="0%" stopColor="#7840c8"/>
@@ -34,7 +34,8 @@ export const AssemblingInvestmentIllustration = () => {
         {/* ── PART 01: BASE PLATFORM ── */}
         <motion.g
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
           <ellipse cx="340" cy="490" rx="242" ry="72" fill="#1e1830" stroke="#2e2248" strokeWidth="1.5"/>
@@ -48,7 +49,8 @@ export const AssemblingInvestmentIllustration = () => {
         {/* ── PART 07: MAGNIFYING GLASS ── */}
         <motion.g
           initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
-          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+          viewport={{ once: true }}
           transition={{ delay: 0.4, duration: 0.6 }}
         >
           <circle cx="172" cy="274" r="44" fill="none" stroke="#2e2c48" strokeWidth="9"/>
@@ -61,7 +63,8 @@ export const AssemblingInvestmentIllustration = () => {
         {/* ── PART 09a: CHART SCREEN PANEL ── */}
         <motion.g
           initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
           transition={{ delay: 0.6, duration: 0.6 }}
         >
           <rect x="224" y="112" width="120" height="90" rx="6" fill="#2a2048" stroke="#9b5de5" strokeWidth="1.5"/>
@@ -75,7 +78,8 @@ export const AssemblingInvestmentIllustration = () => {
         {/* ── PART 09b: DOLLAR SPEECH BUBBLE ── */}
         <motion.g
           initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
           transition={{ delay: 1.5, type: "spring", stiffness: 200 }}
         >
           <rect x="148" y="110" width="58" height="46" rx="8" fill="#2a2048" stroke="#9b5de5" strokeWidth="1.5"/>
@@ -86,7 +90,8 @@ export const AssemblingInvestmentIllustration = () => {
         {/* ── PART 08: SPINNING GEARS ── */}
         <motion.g 
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
           transition={{ delay: 1 }}
         >
           <g className="anim-gear1">
@@ -119,7 +124,8 @@ export const AssemblingInvestmentIllustration = () => {
         <motion.g 
           className="anim-coinL"
           initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ delay: 0.8, duration: 0.6 }}
         >
           <ellipse cx="186" cy="466" rx="40" ry="14" fill="#5a18a0"/>
@@ -148,7 +154,8 @@ export const AssemblingInvestmentIllustration = () => {
         {/* ── PART 02: 3D BAR CHARTS ── */}
         <motion.g
           initial={{ opacity: 0, scaleY: 0 }}
-          animate={{ opacity: 1, scaleY: 1 }}
+          whileInView={{ opacity: 1, scaleY: 1 }}
+          viewport={{ once: true }}
           transition={{ delay: 0.5, duration: 0.8 }}
           style={{ transformOrigin: "bottom" }}
         >
@@ -170,7 +177,8 @@ export const AssemblingInvestmentIllustration = () => {
         <motion.g 
           className="anim-arrow"
           initial={{ opacity: 0, pathLength: 0 }}
-          animate={{ opacity: 1, pathLength: 1 }}
+          whileInView={{ opacity: 1, pathLength: 1 }}
+          viewport={{ once: true }}
           transition={{ delay: 1.2, duration: 1 }}
         >
           <line x1="264" y1="420" x2="450" y2="196" stroke="url(#arrowGrad)" strokeWidth="9" strokeLinecap="round"/>
@@ -181,7 +189,8 @@ export const AssemblingInvestmentIllustration = () => {
         <motion.g 
           className="anim-coinR"
           initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ delay: 1.4, duration: 0.6 }}
         >
           <ellipse cx="488" cy="462" rx="32" ry="11" fill="#4a1080"/>
@@ -201,7 +210,8 @@ export const AssemblingInvestmentIllustration = () => {
         {/* ── PART 06: PIE CHARTS ── */}
         <motion.g
           initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
           transition={{ delay: 1.1, duration: 0.6 }}
         >
           {/* Pie 1 */}
@@ -227,7 +237,8 @@ export const AssemblingInvestmentIllustration = () => {
         {/* ── PART 09c: PERCENT TAG ── */}
         <motion.g
           initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
           transition={{ delay: 1.6, duration: 0.5 }}
         >
           <rect x="454" y="524" width="40" height="26" rx="6" fill="#2a2048" stroke="#9b5de5" strokeWidth="1.2"/>
@@ -239,7 +250,8 @@ export const AssemblingInvestmentIllustration = () => {
           transform="translate(510,374)" 
           opacity="0.65"
           initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 0.65, scale: 1 }}
+          whileInView={{ opacity: 0.65, scale: 1 }}
+          viewport={{ once: true }}
           transition={{ delay: 1.8 }}
         >
           <path d="M0,0 Q22,-32 12,-64 Q-12,-44 0,0Z" fill="#c4a0f0"/>
@@ -252,7 +264,8 @@ export const AssemblingInvestmentIllustration = () => {
         <motion.g 
           className="anim-float"
           initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{ delay: 2, duration: 0.8, type: "spring" }}
         >
           {/* Laptop */}

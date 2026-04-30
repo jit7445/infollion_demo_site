@@ -15,6 +15,18 @@ export function LampAnimation() {
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
+  const [particles, setParticles] = React.useState<{top: number, left: number, delay: number, duration: number}[]>([]);
+
+  useEffect(() => {
+    const p = [...Array(25)].map((_, i) => ({
+      top: 150 + Math.random() * 650,
+      left: 50 + Math.random() * 900,
+      delay: i * 0.1,
+      duration: 4 + Math.random() * 4,
+    }));
+    setParticles(p);
+  }, []);
+
   return (
     <div
       className="pointer-events-none z-0 flex flex-col items-center"
@@ -82,7 +94,7 @@ export function LampAnimation() {
 
         {/* Scattered Particles - Tiny Sharp Dots */}
         <div className="absolute inset-0 pointer-events-none">
-          {[...Array(25)].map((_, i) => (
+          {particles.map((p, i) => (
             <motion.div
               key={i}
               className="absolute w-[2px] h-[2px] rounded-full bg-[#FF7A30]"
@@ -90,10 +102,10 @@ export function LampAnimation() {
                 opacity: [0.1, 0.6, 0.1],
                 y: [0, -30, 0]
               }}
-              transition={{ duration: 4 + Math.random() * 4, repeat: Infinity, delay: i * 0.1 }}
+              transition={{ duration: p.duration, repeat: Infinity, delay: p.delay }}
               style={{
-                top: 150 + Math.random() * 650,
-                left: 50 + Math.random() * 900,
+                top: p.top,
+                left: p.left,
                 filter: "blur(0.2px)"
               }}
             />
