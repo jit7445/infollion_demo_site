@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
+import { motion, useScroll, useTransform, AnimatePresence, useMotionValue } from "framer-motion";
 import {
   Phone,
   Users,
@@ -23,11 +23,15 @@ import {
   Lightbulb,
   Coins,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { BackgroundParticles } from "@/components/BackgroundParticles";
 import ParticleHero from "@/components/ParticleHero";
 import { LampAnimation } from "@/components/LampAnimation";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import { AssemblingInvestmentIllustration } from "@/components/AssemblingInvestmentIllustration";
+import { TeamAssemblyIllustration } from "@/components/TeamAssemblyIllustration";
+import { ResearchIllustration } from "@/components/ResearchIllustration";
 import { MovingBorder } from "@/components/ui/moving-border";
 import dynamic from "next/dynamic";
 const GlobeStoryboard = dynamic(() => import("@/components/GlobeStoryboard").then((mod) => mod.GlobeStoryboard), {
@@ -66,27 +70,30 @@ function MagneticButton({
 }
 
 // Helper to handle motion values without complex setup for now
-import { useMotionValue } from "motion/react";
 function motionValue(v: number) {
   return useMotionValue(v);
 }
 
-function TimelineStepCard({ step, isRight = false }: { step: any, isRight?: boolean }) {
+function TimelineStepCard({ step, isRight = false }: { step: any; isRight?: boolean }) {
   const [isHovered, setIsHovered] = useState(false);
   return (
-    <motion.div 
-      initial={{ opacity: 0, x: isRight ? 30 : -30 }} 
-      whileInView={{ opacity: 1, x: 0 }} 
-      viewport={{ once: true, margin: "-100px" }} 
+    <motion.div
+      initial={{ opacity: 0, x: isRight ? 30 : -30 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.7, ease: "easeOut" }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className="relative"
     >
       <MovingBorder isHovered={isHovered} duration={4000} borderRadius="2rem">
-        <div className={`p-8 md:p-10 rounded-[2rem] bg-black/[0.03] dark:bg-white/[0.02] border border-black/5 dark:border-white/10 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] relative overflow-hidden group transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(236,147,36,0.15)] ${isRight ? 'text-right' : 'text-left'}`}>
+        <div
+          className={`p-8 md:p-10 rounded-[2rem] bg-black/[0.03] dark:bg-white/[0.02] border border-black/5 dark:border-white/10 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] relative overflow-hidden group transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(236,147,36,0.15)] ${isRight ? "text-right" : "text-left"}`}
+        >
           <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-          <span className="text-[10px] tracking-[0.2em] text-[var(--text-muted)] mb-3 block uppercase font-mono relative z-10">Step {step.id}</span>
+          <span className="text-[10px] tracking-[0.2em] text-[var(--text-muted)] mb-3 block uppercase font-mono relative z-10">
+            Step {step.id}
+          </span>
           <h3 className="text-lg font-playfair text-[var(--text)] mb-3 relative z-10">{step.title}</h3>
           <p className="text-sm text-[var(--text-muted)] leading-relaxed relative z-10">{step.text}</p>
         </div>
@@ -143,9 +150,7 @@ function TimelineSteps() {
             <div key={step.id} className="relative flex items-center w-full">
               {/* Left Content */}
               <div className={`w-1/2 pr-12 md:pr-16 ${!isEven ? "opacity-0" : "text-left"}`}>
-                {isEven && (
-                  <TimelineStepCard step={step} />
-                )}
+                {isEven && <TimelineStepCard step={step} />}
               </div>
 
               {/* Center Node */}
@@ -155,9 +160,7 @@ function TimelineSteps() {
 
               {/* Right Content */}
               <div className={`w-1/2 pl-12 md:pl-16 ${isEven ? "opacity-0" : "text-right flex flex-col items-end"}`}>
-                {!isEven && (
-                  <TimelineStepCard step={step} isRight />
-                )}
+                {!isEven && <TimelineStepCard step={step} isRight />}
               </div>
             </div>
           );
@@ -167,7 +170,15 @@ function TimelineSteps() {
   );
 }
 
-function ScrollZoomWrapper({ children, className = "", id }: { children: React.ReactNode; className?: string; id?: string }) {
+function ScrollZoomWrapper({
+  children,
+  className = "",
+  id,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  id?: string;
+}) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -185,6 +196,7 @@ function ScrollZoomWrapper({ children, className = "", id }: { children: React.R
 }
 
 export default function Home() {
+  const router = useRouter();
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -200,20 +212,22 @@ export default function Home() {
 
   const useCases = [
     {
+      id: "corporations",
       title: "CORPORATIONS",
       icon: <Building2 className="w-10 h-10 text-[#ec9324]" strokeWidth={1.5} />,
       desc: "Connect with industry veterans for market entry strategy, supply chain optimization, and digital transformation.",
     },
     {
+      id: "consulting",
       title: "RESEARCH & CONSULTING FIRMS",
       icon: <Lightbulb className="w-10 h-10 text-[#ec9324]" strokeWidth={1.5} />,
       desc: "Empower your consulting projects with precise, expert-vetted insights from global subject matter experts.",
     },
     {
+      id: "investment",
       title: "INVESTMENT FUNDS",
       icon: <Coins className="w-10 h-10 text-[#ec9324]" strokeWidth={1.5} />,
       desc: "Mitigate risks and validate investment theses with direct access to C-suite experts and industry insiders.",
-      image: "/animationimaage/Investment data-amico.svg",
     },
   ];
 
@@ -398,10 +412,10 @@ export default function Home() {
           style={{ perspective: "1500px" }}
         >
           {[
-            { label: "Calls", icon: <Phone className="w-6 h-6" />, desc: "Expert consultations on precise agendas." },
-            { label: "Sit-ins", icon: <Users className="w-6 h-6" />, desc: "Private workshops & masterclasses." },
-            { label: "Tours", icon: <Plane className="w-6 h-6" />, desc: "Field research & site visits." },
-            { label: "PexPanel", icon: <UserPlus className="w-6 h-6" />, desc: "On-demand expert team members." },
+            { id: "calls", label: "Calls", icon: <Phone className="w-6 h-6" />, desc: "Expert consultations on precise agendas." },
+            { id: "sit-ins", label: "Sit-ins", icon: <Users className="w-6 h-6" />, desc: "Private workshops & masterclasses." },
+            { id: "tours", label: "Tours", icon: <Plane className="w-6 h-6" />, desc: "Field research & site visits." },
+            { id: "paxpanel", label: "PAXPANEL", icon: <UserPlus className="w-6 h-6" />, desc: "On-demand expert team members." },
           ].map((item, i) => {
             const [localHover, setLocalHover] = useState(false);
             return (
@@ -426,16 +440,22 @@ export default function Home() {
                 style={{ transformStyle: "preserve-3d" }}
               >
                 <MovingBorder isHovered={localHover} duration={3500} borderRadius="2rem">
-                  <div className="group p-8 h-full rounded-[2rem] bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/10 backdrop-blur-xl shadow-lg transition-all duration-500 hover:shadow-[0_20px_40px_rgba(236,147,36,0.15)] hover:border-brand-primary/40 text-left relative overflow-hidden">
+                  <div className="group p-8 h-full rounded-[2rem] bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/10 backdrop-blur-xl shadow-lg transition-all duration-500 hover:shadow-[0_20px_40px_rgba(236,147,36,0.15)] hover:border-brand-primary/40 text-left relative overflow-hidden flex flex-col justify-between">
                     <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                    
-                    <div className="mb-6 text-brand-primary transition-transform group-hover:scale-110 group-hover:rotate-12 duration-500">
-                      {item.icon}
+
+                    <div>
+                      <div className="mb-6 text-brand-primary transition-transform group-hover:scale-110 group-hover:rotate-12 duration-500">
+                        {item.icon}
+                      </div>
+                      <h4 className="text-sm font-bold uppercase tracking-widest text-brand-text mb-3">{item.label}</h4>
+                      <p className="text-xs text-brand-text-muted leading-relaxed opacity-70 group-hover:opacity-100 transition-opacity">
+                        {item.desc}
+                      </p>
                     </div>
-                    <h4 className="text-sm font-bold uppercase tracking-widest text-brand-text mb-3">{item.label}</h4>
-                    <p className="text-xs text-brand-text-muted leading-relaxed opacity-70 group-hover:opacity-100 transition-opacity">
-                      {item.desc}
-                    </p>
+
+                    <div className="mt-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#ec9324] opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-[-10px] group-hover:translate-x-0">
+                      Learn More <ArrowRight className="w-3 h-3" />
+                    </div>
                   </div>
                 </MovingBorder>
               </motion.div>
@@ -445,8 +465,15 @@ export default function Home() {
       </ScrollZoomWrapper>
 
       {/* ── USE CASES SECTION ── */}
-      {/* ── USE CASES SECTION ── */}
-      <ScrollZoomWrapper className="mt-32 text-center pb-32 px-10 lg:px-24">
+      <ScrollZoomWrapper className="mt-32 text-center pb-32 px-10 lg:px-24 relative">
+        {/* Orbital Dot from Image 1 */}
+        <div className="absolute -top-12 left-10 lg:left-24 w-12 h-12 flex items-center justify-center pointer-events-none">
+          <div className="w-2 h-2 bg-[#ec9324] rounded-full relative z-10 shadow-[0_0_15px_rgba(236,147,36,1)]" />
+          <div className="absolute inset-0 border border-[#ec9324]/40 rounded-full animate-ping scale-75" />
+          <div className="absolute inset-0 border border-[#ec9324]/20 rounded-full scale-125" />
+          <div className="absolute inset-0 bg-[#ec9324]/5 rounded-full blur-xl scale-150" />
+        </div>
+
         <h2 className="reveal text-lg md:text-xl font-black tracking-[0.2em] uppercase mb-6 flex justify-center gap-3 md:gap-5">
           <span className="text-[var(--text)]">SAMPLE</span>
           <span className="text-[#ec9324]">USE-CASES</span>
@@ -458,90 +485,47 @@ export default function Home() {
           style={{ perspective: "1500px" }}
         >
           {useCases.map((item, i) => {
-            const isActive = activeUseCase === i;
+            const [localHover, setLocalHover] = useState(false);
             return (
               <motion.div
                 key={i}
-                layout
+                initial={{ opacity: 0, rotateX: 60, y: 150, z: -500, scale: 0.8 }}
+                whileInView={{ opacity: 1, rotateX: 0, y: 0, z: 0, scale: 1 }}
+                viewport={{ once: true }}
                 transition={{
-                  layout: { type: "spring", stiffness: 260, damping: 25 },
+                  duration: 1.2,
+                  delay: i * 0.1,
+                  ease: [0.16, 1, 0.3, 1],
                 }}
-                className={`flex flex-col items-center group cursor-pointer transition-all duration-500 ${isActive ? "md:scale-105 z-20" : "opacity-80 hover:opacity-100"}`}
-                style={{ transformStyle: "preserve-3d" }}
+                className="flex flex-col items-center group cursor-pointer"
+                onClick={() => router.push(`/use-case#${item.id}`)}
+                onMouseEnter={() => setLocalHover(true)}
+                onMouseLeave={() => setLocalHover(false)}
               >
-                <motion.div 
-                  layout
-                  transition={{
-                    layout: { type: "spring", stiffness: 260, damping: 25 }
-                  }}
-                  initial={{ opacity: 0, rotateX: 60, y: 150, z: -500, scale: 0.8 }}
-                  whileInView={{ opacity: 1, rotateX: 0, y: 0, z: 0, scale: 1 }}
-                  viewport={{ once: true }}
-                  onMouseEnter={() => setUseCaseHover(i)}
-                  onMouseLeave={() => setUseCaseHover(null)}
-                  onClick={() => setActiveUseCase(isActive ? null : i)}
+                <motion.div
                   className="relative"
+                  whileHover={{
+                    y: -10,
+                    rotateX: 10,
+                    scale: 1.05,
+                  }}
                 >
-                  <MovingBorder 
-                    isHovered={isActive || useCaseHover === i} 
-                    duration={isActive ? 2500 : 4000} 
-                    borderRadius={isActive ? "2.5rem" : "2rem"}
-                  >
-                    <div
-                      className={`${isActive ? 'w-64 md:w-80 h-auto p-10' : 'w-32 h-32 md:w-36 md:h-36'} rounded-[2rem] md:rounded-[2.5rem] bg-[#1a1a1a] dark:bg-[var(--card-bg)] border border-black/5 dark:border-[var(--border)] flex flex-col items-center justify-center shadow-2xl transition-all duration-700 ${!isActive && 'group-hover:-translate-y-4 group-hover:rotate-x-12 group-hover:shadow-[0_20px_40px_-10px_rgba(236,147,36,0.3)]'} ${isActive ? 'border-[#ec9324]/50 shadow-[0_0_50px_rgba(236,147,36,0.2)]' : 'group-hover:border-[#ec9324]/50'}`}
-                    >
-                      <div className={`transition-transform duration-700 ${!isActive && 'group-hover:scale-110'} ${isActive ? 'mb-6' : ''}`}>
-                        {item.icon}
-                      </div>
-
-                      <AnimatePresence>
-                        {isActive && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 10 }}
-                            className="text-center"
-                          >
-                            <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-[#ec9324] mb-4">
-                              {item.title}
-                            </h3>
-                            {item.title === "INVESTMENT FUNDS" ? (
-                              <div className="w-48 h-48 mx-auto mb-6">
-                                <AssemblingInvestmentIllustration />
-                              </div>
-                            ) : (
-                              item.image && (
-                                <motion.img 
-                                  initial={{ opacity: 0, scale: 0.9 }}
-                                  animate={{ opacity: 1, scale: 1 }}
-                                  src={item.image} 
-                                  alt={item.title} 
-                                  className="w-40 h-40 mx-auto mb-6 drop-shadow-xl" 
-                                />
-                              )
-                            )}
-                            <p className="text-xs text-[var(--text-muted)] leading-relaxed italic px-4">
-                              "{item.desc}"
-                            </p>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                  <MovingBorder isHovered={localHover} duration={3500} borderRadius="2rem">
+                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-[2rem] bg-[#1a1a1a] dark:bg-[var(--card-bg)] border border-black/5 dark:border-[var(--border)] flex items-center justify-center shadow-2xl transition-all duration-500 overflow-hidden group-hover:border-[#ec9324]/50 group-hover:shadow-[0_20px_40px_-10px_rgba(236,147,36,0.3)]">
+                      <div className="transition-transform duration-500 group-hover:scale-110">{item.icon}</div>
                     </div>
                   </MovingBorder>
                 </motion.div>
 
-                {!isActive && (
-                  <motion.h3
-                    layout
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.3 + i * 0.1 }}
-                    viewport={{ once: true }}
-                    className="text-[9px] md:text-[11px] font-bold uppercase tracking-[0.3em] text-[var(--text-muted)] group-hover:text-[var(--text)] transition-colors duration-500 mt-6 md:mt-8"
-                  >
-                    {item.title}
-                  </motion.h3>
-                )}
+                <motion.h3
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.3 + i * 0.1 }}
+                  viewport={{ once: true }}
+                  className="text-[10px] md:text-[12px] font-black uppercase tracking-[0.3em] text-[var(--text-muted)] group-hover:text-[#ec9324] transition-colors duration-500 mt-8"
+                >
+                  {item.title}
+                </motion.h3>
               </motion.div>
             );
           })}

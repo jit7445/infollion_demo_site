@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ScrollAnimations from "@/components/ScrollAnimations";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Phone, MapPin, Linkedin, Twitter, ChevronDown, Sun, Moon } from "lucide-react";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });

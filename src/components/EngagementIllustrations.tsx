@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { motion, useSpring, useTransform, useScroll, useMotionValue, animate, stagger } from 'motion/react';
+import { motion, useSpring, useTransform, useScroll, useMotionValue, animate, stagger } from 'framer-motion';
 
 // ─── DESIGN TOKENS ────────────────────────────────────────────────────────────
 const T = {

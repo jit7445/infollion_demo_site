@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { Plus, Minus, Building2, Lightbulb, Coins } from "lucide-react";
 import { AssemblingInvestmentIllustration } from "@/components/AssemblingInvestmentIllustration";
 import { TeamAssemblyIllustration } from "@/components/TeamAssemblyIllustration";
@@ -148,12 +148,14 @@ function UseCaseSection({
   id, 
   category, 
   activeId, 
-  setActiveId 
+  setActiveId,
+  isReversed
 }: { 
   id: string; 
   category: any; 
   activeId: string | null; 
-  setActiveId: (id: string | null) => void 
+  setActiveId: (id: string | null) => void;
+  isReversed?: boolean;
 }) {
   const sectionRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -168,8 +170,8 @@ function UseCaseSection({
       <div ref={sectionRef}>
         {/* Header Split */}
         <div className="grid lg:grid-cols-2 gap-12 items-end mb-8">
-          <div className="relative">
-            <div className="text-4xl lg:text-6xl font-serif leading-tight flex flex-wrap items-baseline gap-x-4">
+          <div className={`relative ${isReversed ? 'lg:order-2 text-right' : ''}`}>
+            <div className={`text-4xl lg:text-6xl font-serif leading-tight flex flex-wrap items-baseline gap-x-4 ${isReversed ? 'justify-end' : ''}`}>
               <ScrollTextReveal 
                 text={category.title} 
                 as="h2" 
@@ -189,20 +191,20 @@ function UseCaseSection({
               whileInView={{ scale: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
-              className="absolute -right-4 -top-4 w-10 h-10 flex items-center justify-center"
+              className={`absolute -top-4 w-10 h-10 flex items-center justify-center ${isReversed ? '-left-4' : '-right-4'}`}
             >
               <div className="w-2 h-2 bg-brand-primary rounded-full relative z-10" />
               <div className="absolute inset-0 bg-brand-primary/20 rounded-full animate-ping scale-75" />
               <div className="absolute inset-0 border border-brand-primary/30 rounded-full scale-50" />
             </motion.div>
           </div>
-          <div className="pb-2">
+          <div className={`pb-2 ${isReversed ? 'lg:order-1' : ''}`}>
             <motion.p 
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-              className="text-sm lg:text-base opacity-50 max-w-lg leading-relaxed"
+              className={`text-sm lg:text-base opacity-50 max-w-lg leading-relaxed ${isReversed ? 'ml-auto text-right' : ''}`}
             >
               {category.desc}
             </motion.p>
@@ -220,7 +222,7 @@ function UseCaseSection({
         {/* Main Content Layout */}
         <div className="grid lg:grid-cols-12 gap-16 items-start">
           {/* Accordion Column */}
-          <div className="lg:col-span-6">
+          <div className={`lg:col-span-6 ${isReversed ? 'lg:order-2' : ''}`}>
             {category.items.map((item: any, i: number) => (
               <AccordionItem
                 key={item.num}
@@ -235,7 +237,7 @@ function UseCaseSection({
           </div>
 
           {/* Illustration & Stats Card Column */}
-          <div className="lg:col-span-6 lg:sticky lg:top-32">
+          <div className={`lg:col-span-6 lg:sticky lg:top-32 ${isReversed ? 'lg:order-1' : ''}`}>
             <div className="dark:bg-[#111111] bg-[#FAF9F6] border border-black/[0.05] dark:border-transparent rounded-[3rem] p-10 shadow-xl relative overflow-hidden group transition-all duration-500">
               <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
               
@@ -267,6 +269,30 @@ function UseCaseSection({
   );
 }
 
+function UseCaseNavLink({ cat, i }: { cat: any, i: number }) {
+  const [isHovered, setIsHovered] = useState(false);
+  return (
+    <motion.a
+      href={`#${cat.id}`}
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: i * 0.1 }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="group flex flex-col items-center gap-4"
+    >
+      <MovingBorder isHovered={isHovered} borderRadius="1.5rem">
+        <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-3xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-brand-primary transition-all duration-500 group-hover:bg-brand-primary group-hover:text-white group-hover:-translate-y-2 shadow-2xl">
+          {cat.icon}
+        </div>
+      </MovingBorder>
+      <span className="text-[9px] font-black tracking-[0.2em] uppercase opacity-40 group-hover:opacity-100 transition-opacity">
+        {cat.label}
+      </span>
+    </motion.a>
+  );
+}
+
 export default function UseCases() {
   const [activeId, setActiveId] = useState<string | null>("corporations-0");
 
@@ -295,42 +321,22 @@ export default function UseCases() {
         </div>
 
         <div className="max-w-4xl mx-auto mt-16 grid grid-cols-3 gap-6 relative z-10 px-4">
-          {useCaseCategories.map((cat, i) => {
-            const [isHovered, setIsHovered] = useState(false);
-            return (
-              <motion.a
-                key={cat.id}
-                href={`#${cat.id}`}
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                className="group flex flex-col items-center gap-4"
-              >
-                <MovingBorder isHovered={isHovered} borderRadius="1.5rem">
-                  <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-3xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-brand-primary transition-all duration-500 group-hover:bg-brand-primary group-hover:text-white group-hover:-translate-y-2 shadow-2xl">
-                    {cat.icon}
-                  </div>
-                </MovingBorder>
-                <span className="text-[9px] font-black tracking-[0.2em] uppercase opacity-40 group-hover:opacity-100 transition-opacity">
-                  {cat.label}
-                </span>
-              </motion.a>
-            );
-          })}
+          {useCaseCategories.map((cat, i) => (
+            <UseCaseNavLink key={cat.id} cat={cat} i={i} />
+          ))}
         </div>
       </section>
 
       {/* Main Content Sections */}
       <div className="max-w-7xl mx-auto space-y-48 pb-40">
-        {Object.entries(contentMap).map(([id, category]) => (
+        {Object.entries(contentMap).map(([id, category], index) => (
           <UseCaseSection 
             key={id} 
             id={id} 
             category={category} 
             activeId={activeId} 
             setActiveId={setActiveId} 
+            isReversed={index % 2 !== 0}
           />
         ))}
       </div>

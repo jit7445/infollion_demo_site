@@ -300,8 +300,8 @@ export function GlobeStoryboard() {
     let totalT = 0;
     let sceneT = 0;
     let currentStage = 0;
-    let matchedExpertIdx = 1; // Start with London (index 1)
-    const STAGE_DUR = [350, 400, 350, 400, 450];
+    let matchedExpertIdx = Math.floor(Math.random() * profiles.length); 
+    const STAGE_DUR = [200, 350, 400, 150, 400, 450];
 
     function drawHUD() {
       if (!hctx || !hud) return;
@@ -309,10 +309,16 @@ export function GlobeStoryboard() {
       const cx = hud.width * 0.5;
       const cy = hud.height * 0.5;
       const dist = Math.min(hud.width, hud.height) * 0.45;
+      const isMobile = hud.width < 768;
+      const uiScale = isMobile ? dist / 220 : dist / 340;
+      const s = uiScale;
       const f = sceneT;
       const st = currentStage;
 
-      const clientPos = { x: cx - dist * 0.75, y: cy + dist * 0.65 };
+      const clientPos = { 
+        x: cx - dist * (isMobile ? 0.8 : 0.75), 
+        y: cy + dist * (isMobile ? 0.6 : 0.65) 
+      };
 
       // Project 3D positions to 2D
       const vec = new THREE.Vector3();
@@ -334,24 +340,30 @@ export function GlobeStoryboard() {
       projectedProfiles.forEach((p, i) => {
         if (!p.visible) return;
 
-        // User's specific fail target logic
-        const failDuration = Math.floor(STAGE_DUR[0] / 4);
+        // Fade out everything in the final logo stage for clean outro
+        const fadeOut = st === 5 ? Math.max(0, 1 - f / 40) : 1;
+        hctx.save();
+        hctx.globalAlpha *= fadeOut;
+
+        // Failure sequence targets logic
+        const failCount = 5;
+        const failDuration = Math.floor(STAGE_DUR[1] / failCount);
         const failIdx = Math.floor(f / failDuration);
-        const failSeeds = [7, 13, 3, 17];
+        const failSeeds = [7, 13, 3, 17, 22];
         const currentFailIdx = failSeeds[failIdx % failSeeds.length] % projectedProfiles.length;
 
-        const isMatch = (st === 2 || st === 3) && i === matchedExpertIdx;
-        const isFailTarget = st === 0 && i === currentFailIdx;
+        const isMatch = (st === 3 || st === 4) && i === matchedExpertIdx;
+        const isFailTarget = st === 1 && i === currentFailIdx;
         const col = isMatch || isFailTarget ? colors.accent : colors.profileDefault;
 
         // Base Dot (Small red dot as per image 1)
         hctx.beginPath();
-        hctx.arc(p.screenX, p.screenY, 2.5, 0, Math.PI * 2);
+        hctx.arc(p.screenX, p.screenY, 2.5 * s, 0, Math.PI * 2);
         hctx.fillStyle = "#ff4444";
         hctx.fill();
 
         // Connector Line
-        const offY = 25;
+        const offY = 25 * s;
         hctx.beginPath();
         hctx.moveTo(p.screenX, p.screenY);
         hctx.lineTo(p.screenX, p.screenY - offY);
@@ -359,55 +371,63 @@ export function GlobeStoryboard() {
         hctx.lineWidth = 1;
         hctx.stroke();
 
+        const avR = 14 * s;
         // Avatar / Silhouette
         if (isMatch || isFailTarget) {
           if (isMatch && expertAvatar.current && expertAvatar.current.complete) {
             hctx.save();
             hctx.beginPath();
-            hctx.arc(p.screenX, p.screenY - offY - 14, 14, 0, Math.PI * 2);
+            hctx.arc(p.screenX, p.screenY - offY - avR, avR, 0, Math.PI * 2);
             hctx.clip();
-            hctx.drawImage(expertAvatar.current, p.screenX - 14, p.screenY - offY - 28, 28, 28);
+            hctx.drawImage(expertAvatar.current, p.screenX - avR, p.screenY - offY - avR * 2, avR * 2, avR * 2);
             hctx.restore();
           } else {
-            drawSilhouette(hctx, p.screenX, p.screenY - offY - 14, 14, colors.accent);
+            drawSilhouette(hctx, p.screenX, p.screenY - offY - avR, avR, colors.accent);
           }
           // Orange ring for both match and current fail target
           hctx.beginPath();
-          hctx.arc(p.screenX, p.screenY - offY - 14, 14, 0, Math.PI * 2);
+          hctx.arc(p.screenX, p.screenY - offY - avR, avR, 0, Math.PI * 2);
           hctx.strokeStyle = colors.accent;
-          hctx.lineWidth = 2.5;
+          hctx.lineWidth = 2.5 * s;
           hctx.stroke();
         } else {
-          drawSilhouette(hctx, p.screenX, p.screenY - offY - 14, 14, colors.profileDefault);
+          drawSilhouette(hctx, p.screenX, p.screenY - offY - avR, avR, colors.profileDefault);
         }
+        hctx.restore();
       });
 
       if (st === 0) {
-        modernStickman(hctx, clientPos.x, clientPos.y, 1.1, colors.accent, totalT, { interacting: true });
+        // Atmospheric: Only Globe + Profiles + Client
+        modernStickman(hctx, clientPos.x, clientPos.y, 1.1 * s, colors.accent, totalT);
+      } else if (st === 1) {
+        // Failed Connections
+        modernStickman(hctx, clientPos.x, clientPos.y, 1.1 * s, colors.accent, totalT, { interacting: true });
         
-        const failDuration = Math.floor(STAGE_DUR[0] / 4);
+        const failCount = 5;
+        const failDuration = Math.floor(STAGE_DUR[1] / failCount);
         const failIdx = Math.floor(f / failDuration);
-        const failSeeds = [7, 13, 3, 17];
+        const failSeeds = [7, 13, 3, 17, 22];
         const currentFailIdx = failSeeds[failIdx % failSeeds.length] % projectedProfiles.length;
         const targetExpert = projectedProfiles[currentFailIdx];
 
         if (targetExpert && targetExpert.visible) {
-          brokenLine(hctx, clientPos.x, clientPos.y - 30, targetExpert.screenX, targetExpert.screenY - 25, totalT, "#ff4444");
+          brokenLine(hctx, clientPos.x, clientPos.y - 30 * s, targetExpert.screenX, targetExpert.screenY - 25 * s, totalT, "#ff4444");
           
           // Draw Red Cross over Target Expert
-          const ex = targetExpert.screenX, ey = targetExpert.screenY - 39;
-          const sz = 12;
+          const ex = targetExpert.screenX, ey = targetExpert.screenY - 39 * s;
+          const sz = 12 * s;
           hctx.save();
           hctx.strokeStyle = "#ff4444";
-          hctx.lineWidth = 3;
+          hctx.lineWidth = 3 * s;
           hctx.beginPath();
           hctx.moveTo(ex - sz, ey - sz); hctx.lineTo(ex + sz, ey + sz);
           hctx.moveTo(ex + sz, ey - sz); hctx.lineTo(ex - sz, ey + sz);
           hctx.stroke();
           hctx.restore();
         }
-      } else if (st === 1) {
-        modernStickman(hctx, clientPos.x, clientPos.y, 1.1, colors.accent, totalT);
+      } else if (st === 2) {
+        // Infollion "O" Scan
+        modernStickman(hctx, clientPos.x, clientPos.y, 1.1 * s, colors.accent, totalT);
 
         // Professional Radar Sweep (Trailing Fade Wedge)
         hctx.save();
@@ -431,12 +451,13 @@ export function GlobeStoryboard() {
         hctx.restore();
 
         if (oLogo.current) {
-          const s = Math.max(80, 240 - f * 2.5);
+          const logoS = (isMobile ? 60 : 80);
+          const sGrow = Math.max(logoS, (isMobile ? 180 : 240) - f * 2.5);
           const alpha = Math.min(1, f / 40);
           hctx.save();
           hctx.globalAlpha = alpha;
 
-          hctx.drawImage(oLogo.current, cx - s / 2, cy - s / 2, s, s);
+          hctx.drawImage(oLogo.current, cx - sGrow / 2, cy - sGrow / 2, sGrow, sGrow);
           hctx.restore();
         }
         if (f > 80) {
@@ -444,35 +465,36 @@ export function GlobeStoryboard() {
           hctx.beginPath();
           hctx.arc(cx, cy, scanR, 0, Math.PI * 2);
           hctx.strokeStyle = colors.accent;
-          hctx.lineWidth = 3;
-          hctx.stroke();
-        }
-      } else if (st === 2) {
-        modernStickman(hctx, clientPos.x, clientPos.y, 1.1, colors.accent, totalT);
-        if (expert.visible) {
-          hctx.beginPath();
-          hctx.arc(expert.screenX, expert.screenY - 39, 24 + Math.sin(totalT * 0.1) * 6, 0, Math.PI * 2);
-          hctx.strokeStyle = colors.accent;
-          hctx.lineWidth = 1.5;
+          hctx.lineWidth = 3 * s;
           hctx.stroke();
         }
       } else if (st === 3) {
-        modernStickman(hctx, clientPos.x, clientPos.y, 1.1, colors.accent, totalT);
-        if (expert.visible) {
+        // Expert Match (Orange)
+        modernStickman(hctx, clientPos.x, clientPos.y, 1.1 * s, colors.accent, totalT);
+        hctx.beginPath();
+        hctx.arc(expert.screenX, expert.screenY - 39 * s, (24 + Math.sin(totalT * 0.1) * 6) * s, 0, Math.PI * 2);
+        hctx.strokeStyle = colors.accent;
+        hctx.lineWidth = 1.5 * s;
+        hctx.stroke();
+      } else if (st === 4) {
+        // Conversation Waveform
+        modernStickman(hctx, clientPos.x, clientPos.y, 1.1 * s, colors.accent, totalT);
+        if (f > 30) {
           drawWaveform(
             hctx,
-            clientPos.x + 20,
-            clientPos.y - 40,
+            clientPos.x + 20 * s,
+            clientPos.y - 40 * s,
             expert.screenX,
-            expert.screenY - 40,
+            expert.screenY - 40 * s,
             totalT,
             colors.accent,
           );
         }
-      } else if (st === 4) {
+      } else if (st === 5) {
+        // Final Logo (Outro)
         if (fullLogo.current) {
-          const lw = 240,
-            lh = 55;
+          const lw = isMobile ? 180 : 240,
+            lh = isMobile ? 42 : 55;
           const alpha = Math.min(1, f / 60);
           hctx.save();
           hctx.globalAlpha = alpha;
@@ -483,8 +505,11 @@ export function GlobeStoryboard() {
     }
 
     const loop = () => {
-      // Cinematic slow rotation for smooth motion
+      const st = currentStage;
+      
+      // Cinematic slow rotation for smooth motion throughout all stages
       globe.rotation.y -= 0.0015;
+      
       // Add cinematic axial tilt (approx 23.5 degrees)
       globe.rotation.z = 0.41;
 
@@ -496,7 +521,7 @@ export function GlobeStoryboard() {
       if (sceneT >= STAGE_DUR[currentStage]) {
         sceneT = 0;
         currentStage = (currentStage + 1) % STAGE_DUR.length;
-        // Randomize expert and start view for the next loop when we finish stage 4
+        // Randomize expert and start view for the next loop when we finish the last stage
         if (currentStage === 0) {
           matchedExpertIdx = Math.floor(Math.random() * profiles.length);
           globe.rotation.y = Math.random() * Math.PI * 2; // Random start view
@@ -510,8 +535,13 @@ export function GlobeStoryboard() {
       if (!mount) return;
       W = mount.clientWidth;
       H = mount.clientHeight;
+      const isMobile = W < 768;
+
       cam.aspect = W / H;
+      // Adjust camera distance for mobile to fit the globe nicely
+      cam.position.z = isMobile ? 500 : 360; 
       cam.updateProjectionMatrix();
+      
       renderer.setSize(W, H);
       if (hud) {
         hud.width = W;
@@ -533,12 +563,21 @@ export function GlobeStoryboard() {
 
   return (
     <div
-      className={`relative w-full h-[600px] lg:h-[700px] transition-colors duration-500 rounded-[3rem] overflow-hidden shadow-2xl border ${isDark ? "bg-[#0A0A0A] border-white/[0.03]" : "bg-[#FDFCF7] border-black/[0.03]"}`}
+      className={`relative w-full h-[450px] md:h-[600px] lg:h-[700px] transition-all duration-1000 overflow-hidden ${isDark ? "bg-[#0A0A0A]" : "bg-[#FDFCF7]"}`}
+      style={{
+        maskImage: "radial-gradient(circle at center, black 50%, transparent 100%)",
+        WebkitMaskImage: "radial-gradient(circle at center, black 50%, transparent 100%)"
+      }}
     >
-      <div ref={mountRef} className="absolute inset-0 z-0" />
-      <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none" />
+      {/* Background Glow */}
+      <div className={`absolute inset-0 z-0 opacity-40 ${isDark ? "bg-[radial-gradient(circle_at_center,#1a1a1a_0%,transparent_70%)]" : "bg-[radial-gradient(circle_at_center,#f0f0f0_0%,transparent_70%)]"}`} />
+      
+      <div ref={mountRef} className="absolute inset-0 z-10" />
+      <canvas ref={canvasRef} className="absolute inset-0 z-20 pointer-events-none" />
+      
+      {/* Soft Bottom Dissolve */}
       <div
-        className={`absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t pointer-events-none z-20 ${isDark ? "from-[#0A0A0A]" : "from-[#FDFCF7]"} to-transparent`}
+        className={`absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t pointer-events-none z-30 ${isDark ? "from-[#0A0A0A]" : "from-[#FDFCF7]"} to-transparent opacity-80`}
       />
     </div>
   );

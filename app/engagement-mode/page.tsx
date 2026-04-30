@@ -226,29 +226,35 @@ export default function EngagementMode() {
                   >
                     Market Entry Strategy, Supply Chain Optimization, Competitive Landscaping, Regulatory Navigations, and Technical Validation.
                   </AccordionItem>
-                  <AccordionItem 
-                    title="Delivery Speed" 
-                    isOpen={!!openAccordions['calls-speed']} 
-                    onClick={() => toggleAccordion('calls-speed')}
-                  >
-                    Typical turnaround time for standard requests is 24-48 hours from request to execution.
-                  </AccordionItem>
                 </div>
               </motion.div>
 
               <div className="relative group/inner">
-                <div className="absolute inset-0 bg-[#ec9324]/5 rounded-3xl blur-3xl opacity-0 group-hover/inner:opacity-100 transition-opacity duration-1000" />
-                <div className="relative p-8 md:p-12 rounded-[2.5rem] bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/10 backdrop-blur-3xl overflow-hidden shadow-xl">
-                  <Phone className="w-12 h-12 text-[#ec9324] mb-8" strokeWidth={1} />
-                  <div className="space-y-6">
+                <div className="dark:bg-[#111111] bg-[#FAF9F6] border border-black/[0.05] dark:border-transparent rounded-[3rem] p-10 shadow-xl relative overflow-hidden group/card transition-all duration-500">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#ec9324]/10 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-1000" />
+                  
+                  <div className="aspect-[4/3] flex flex-col items-center justify-center relative z-10 mb-10 scale-90 transition-transform duration-700 group-hover/card:scale-100">
+                    <Phone className="w-20 h-20 text-[#ec9324] mb-6" strokeWidth={1} />
+                    <p className={`${dmMono.className} text-[10px] text-[var(--text-muted)] uppercase tracking-widest text-center max-w-[200px]`}>
+                      Vetted Dialogues & Secure Transcripts
+                    </p>
+                  </div>
+
+                  <div className="w-full h-[1px] dark:bg-white/10 bg-black/[0.08] mb-10 relative z-10" />
+
+                  <div className="grid grid-cols-3 gap-6 relative z-10">
                     {[
-                      { label: "Duration", val: "30 / 60 / 90 mins" },
-                      { label: "Recording", val: "Available on request" },
-                      { label: "Compliance", val: "Full vetting & logs" }
-                    ].map((stat, i) => (
-                      <div key={i} className="flex justify-between items-center border-b border-black/5 dark:border-white/5 pb-4 last:border-0">
-                        <span className={`${dmMono.className} text-[0.7rem] uppercase tracking-widest text-[var(--text-muted)]`}>{stat.label}</span>
-                        <span className={`${dmMono.className} text-xs font-bold`}>{stat.val}</span>
+                      { label: "Duration", val: "30-90m" },
+                      { label: "Vetting", val: "100%" },
+                      { label: "Global", val: "24/7" }
+                    ].map((s) => (
+                      <div key={s.label} className="text-center">
+                        <div className="text-xl lg:text-2xl font-serif text-[#ec9324] font-bold mb-1">
+                          {s.val}
+                        </div>
+                        <div className="text-[7px] font-black tracking-[0.1em] dark:text-white text-black opacity-40 uppercase">
+                          {s.label}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -267,19 +273,34 @@ export default function EngagementMode() {
 
             <div className="relative grid md:grid-cols-2 gap-20 items-center z-10">
               <div className="relative order-2 md:order-1">
-                 <div className="p-8 md:p-12 rounded-[2.5rem] bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/10 backdrop-blur-3xl shadow-xl">
-                   <Users className="w-12 h-12 text-[#ec9324] mb-8" strokeWidth={1} />
-                   <div className="grid grid-cols-2 gap-6">
-                      <div className="p-6 rounded-2xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5">
-                        <h4 className={`${dmMono.className} text-[0.6rem] uppercase tracking-widest text-[var(--text-muted)] mb-3`}>Format</h4>
-                        <p className="text-sm font-medium">Workshop / Seminar</p>
+                <div className="dark:bg-[#111111] bg-[#FAF9F6] border border-black/[0.05] dark:border-transparent rounded-[3rem] p-10 shadow-xl relative overflow-hidden group/card transition-all duration-500">
+                  <div className="aspect-[4/3] flex flex-col items-center justify-center relative z-10 mb-10">
+                    <Users className="w-20 h-20 text-[#ec9324] mb-6" strokeWidth={1} />
+                    <div className="flex gap-4">
+                      <div className="px-3 py-1.5 rounded-full bg-[#ec9324]/10 text-[#ec9324] text-[8px] font-bold uppercase tracking-widest">Workshop</div>
+                      <div className="px-3 py-1.5 rounded-full bg-[#ec9324]/10 text-[#ec9324] text-[8px] font-bold uppercase tracking-widest">Seminar</div>
+                    </div>
+                  </div>
+
+                  <div className="w-full h-[1px] dark:bg-white/10 bg-black/[0.08] mb-10 relative z-10" />
+
+                  <div className="grid grid-cols-3 gap-6 relative z-10">
+                    {[
+                      { label: "Experts", val: "1-5" },
+                      { label: "Formats", val: "Custom" },
+                      { label: "Output", val: "Action" }
+                    ].map((s) => (
+                      <div key={s.label} className="text-center">
+                        <div className="text-xl lg:text-2xl font-serif text-[#ec9324] font-bold mb-1">
+                          {s.val}
+                        </div>
+                        <div className="text-[7px] font-black tracking-[0.1em] dark:text-white text-black opacity-40 uppercase">
+                          {s.label}
+                        </div>
                       </div>
-                      <div className="p-6 rounded-2xl bg-[#ec9324]/5 border border-[#ec9324]/10">
-                        <h4 className={`${dmMono.className} text-[0.6rem] uppercase tracking-widest text-[var(--text-muted)] mb-3`}>Interaction</h4>
-                        <p className="text-sm font-medium">Deep-Dive Q&A</p>
-                      </div>
-                   </div>
-                 </div>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               <motion.div
@@ -377,10 +398,43 @@ export default function EngagementMode() {
             <div className="absolute top-0 left-0 w-96 h-96 bg-[#ec9324]/5 blur-[120px] rounded-full -translate-y-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
 
             <div className="relative grid md:grid-cols-2 gap-20 items-center z-10">
+              <div className="relative order-2 md:order-1">
+                <div className="dark:bg-[#111111] bg-[#FAF9F6] border border-black/[0.05] dark:border-transparent rounded-[3rem] p-10 shadow-xl relative overflow-hidden group/card transition-all duration-500">
+                  <div className="aspect-[4/3] flex flex-col items-center justify-center relative z-10 mb-10">
+                    <MapPin className="w-20 h-20 text-[#ec9324] mb-6" strokeWidth={1} />
+                    <div className="flex flex-wrap justify-center gap-2 max-w-[250px]">
+                      {["Industrial", "SEZs", "Tech Hubs"].map(t => (
+                        <span key={t} className="px-2 py-1 rounded bg-[#ec9324]/10 text-[#ec9324] text-[7px] font-bold uppercase tracking-widest">{t}</span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="w-full h-[1px] dark:bg-white/10 bg-black/[0.08] mb-10 relative z-10" />
+
+                  <div className="grid grid-cols-3 gap-6 relative z-10">
+                    {[
+                      { label: "Sites", val: "Global" },
+                      { label: "Guides", val: "Veterans" },
+                      { label: "Context", val: "Field" }
+                    ].map((s) => (
+                      <div key={s.label} className="text-center">
+                        <div className="text-xl lg:text-2xl font-serif text-[#ec9324] font-bold mb-1">
+                          {s.val}
+                        </div>
+                        <div className="text-[7px] font-black tracking-[0.1em] dark:text-white text-black opacity-40 uppercase">
+                          {s.label}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
               <motion.div
-                initial={{ opacity: 0, x: -30 }}
+                initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
+                className="order-1 md:order-2"
               >
                 <span className={`${dmMono.className} text-[#ec9324] text-[0.65rem] tracking-[0.2em] uppercase mb-6 block`}>
                   04 — KNOWLEDGE TOURS
@@ -405,19 +459,6 @@ export default function EngagementMode() {
                   </AccordionItem>
                 </div>
               </motion.div>
-
-              <div className="relative group/inner">
-                <div className="p-8 md:p-12 rounded-[2.5rem] bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/10 backdrop-blur-3xl overflow-hidden min-h-[300px] flex flex-col justify-center shadow-xl">
-                  <MapPin className="w-12 h-12 text-[#ec9324] mb-8" strokeWidth={1} />
-                  <div className="flex flex-wrap gap-3">
-                    {["Manufacturing", "Site Visits", "Field Research", "Hub Tours", "Veteran Guided"].map((tag, i) => (
-                      <span key={i} className={`${dmMono.className} px-4 py-2 rounded-full bg-[#ec9324]/10 text-[#ec9324] text-[0.6rem] uppercase tracking-widest border border-[#ec9324]/20`}>
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </section>
