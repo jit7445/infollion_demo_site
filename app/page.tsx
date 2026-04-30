@@ -2,33 +2,54 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
-import { 
-  Phone, Users, UserPlus, Plane, 
-  TrendingUp, BrainCircuit, Sparkles, 
-  ArrowRight, ShieldCheck, Search, 
-  FileText, SquareCheckBig, ChevronRight, 
-  Zap, Shield, Globe
+import {
+  Phone,
+  Users,
+  UserPlus,
+  Plane,
+  TrendingUp,
+  BrainCircuit,
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+  Search,
+  FileText,
+  SquareCheckBig,
+  ChevronRight,
+  Zap,
+  Shield,
+  Globe,
+  Building2,
+  Lightbulb,
+  Coins,
 } from "lucide-react";
 import { BackgroundParticles } from "@/components/BackgroundParticles";
+import ParticleHero from "@/components/ParticleHero";
 import { LampAnimation } from "@/components/LampAnimation";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
+import { AssemblingInvestmentIllustration } from "@/components/AssemblingInvestmentIllustration";
+import { MovingBorder } from "@/components/ui/moving-border";
+import dynamic from "next/dynamic";
+const GlobeStoryboard = dynamic(() => import("@/components/GlobeStoryboard").then((mod) => mod.GlobeStoryboard), {
+  ssr: false,
+});
 
 // ─── Sub-Components ─────────────────────────────────────────────────────────
 
-function MagneticButton({ 
-  children, 
-  href, 
-  variant = "primary" 
-}: { 
-  children: React.ReactNode, 
-  href?: string, 
-  variant?: "primary" | "ghost" 
+function MagneticButton({
+  children,
+  href,
+  variant = "primary",
+}: {
+  children: React.ReactNode;
+  href?: string;
+  variant?: "primary" | "ghost";
 }) {
   const ref = useRef<HTMLAnchorElement>(null);
   const [hovered, setHovered] = useState(false);
   const x = useTransform(motionValue(0), [0], [0]); // Placeholder
   const y = useTransform(motionValue(0), [0], [0]); // Placeholder
-  
+
   // Simple implementation for recovery
   return (
     <motion.a
@@ -46,9 +67,122 @@ function MagneticButton({
 
 // Helper to handle motion values without complex setup for now
 import { useMotionValue } from "motion/react";
-function motionValue(v: number) { return useMotionValue(v); }
+function motionValue(v: number) {
+  return useMotionValue(v);
+}
+
+function TimelineStepCard({ step, isRight = false }: { step: any, isRight?: boolean }) {
+  const [isHovered, setIsHovered] = useState(false);
+  return (
+    <motion.div 
+      initial={{ opacity: 0, x: isRight ? 30 : -30 }} 
+      whileInView={{ opacity: 1, x: 0 }} 
+      viewport={{ once: true, margin: "-100px" }} 
+      transition={{ duration: 0.7, ease: "easeOut" }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="relative"
+    >
+      <MovingBorder isHovered={isHovered} duration={4000} borderRadius="2rem">
+        <div className={`p-8 md:p-10 rounded-[2rem] bg-black/[0.03] dark:bg-white/[0.02] border border-black/5 dark:border-white/10 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] relative overflow-hidden group transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(236,147,36,0.15)] ${isRight ? 'text-right' : 'text-left'}`}>
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+          <span className="text-[10px] tracking-[0.2em] text-[var(--text-muted)] mb-3 block uppercase font-mono relative z-10">Step {step.id}</span>
+          <h3 className="text-lg font-playfair text-[var(--text)] mb-3 relative z-10">{step.title}</h3>
+          <p className="text-sm text-[var(--text-muted)] leading-relaxed relative z-10">{step.text}</p>
+        </div>
+      </MovingBorder>
+    </motion.div>
+  );
+}
 
 // ─── Main Page ──────────────────────────────────────────────────────────────
+
+function TimelineSteps() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start center", "end center"],
+  });
+
+  const steps = [
+    {
+      id: "01",
+      title: "Define",
+      icon: <Search className="w-5 h-5" />,
+      text: "Describe the knowledge gap or the kind of ex-CEO you'd hire if budgets allowed.",
+    },
+    {
+      id: "02",
+      title: "Request",
+      icon: <Plane className="w-5 h-5" style={{ transform: "rotate(-45deg)" }} />,
+      text: "We research your topic and share the most relevant profiles with pricing & past work.",
+    },
+    {
+      id: "03",
+      title: "Choose",
+      icon: <SquareCheckBig className="w-5 h-5" />,
+      text: "Pick the expert and the engagement mode that perfectly fits your need.",
+    },
+  ];
+
+  return (
+    <section ref={ref} className="relative mt-32 mb-16 max-w-4xl mx-auto px-6 py-12">
+      {/* Background Dim Line */}
+      <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-[var(--border)] -translate-x-1/2" />
+
+      {/* Animated Colored Line */}
+      <motion.div
+        className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-[#ec9324] -translate-x-1/2 origin-top"
+        style={{ scaleY: scrollYProgress, boxShadow: "0 0 15px 2px rgba(236,147,36,0.6)" }}
+      />
+
+      <div className="flex flex-col gap-32">
+        {steps.map((step, i) => {
+          const isEven = i % 2 === 0;
+          return (
+            <div key={step.id} className="relative flex items-center w-full">
+              {/* Left Content */}
+              <div className={`w-1/2 pr-12 md:pr-16 ${!isEven ? "opacity-0" : "text-left"}`}>
+                {isEven && (
+                  <TimelineStepCard step={step} />
+                )}
+              </div>
+
+              {/* Center Node */}
+              <div className="absolute left-1/2 -translate-x-1/2 w-14 h-14 rounded-full border border-[#ec9324] flex items-center justify-center z-10 bg-[var(--bg2)] shadow-[0_0_30px_rgba(236,147,36,0.3)] dark:shadow-[0_0_40px_rgba(236,147,36,0.4)]">
+                <div className="text-[#ec9324]">{step.icon}</div>
+              </div>
+
+              {/* Right Content */}
+              <div className={`w-1/2 pl-12 md:pl-16 ${isEven ? "opacity-0" : "text-right flex flex-col items-end"}`}>
+                {!isEven && (
+                  <TimelineStepCard step={step} isRight />
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function ScrollZoomWrapper({ children, className = "", id }: { children: React.ReactNode; className?: string; id?: string }) {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  const scale = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [0.8, 1, 1, 0.7]);
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+
+  return (
+    <motion.div id={id} ref={ref} style={{ scale, opacity }} className={className}>
+      {children}
+    </motion.div>
+  );
+}
 
 export default function Home() {
   const containerRef = useRef(null);
@@ -61,37 +195,41 @@ export default function Home() {
   const scale = useTransform(scrollYProgress, [0.05, 0.15], [0.9, 1]);
   const scrollIndicatorOpacity = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
 
+  const [activeUseCase, setActiveUseCase] = useState<number | null>(null);
+  const [useCaseHover, setUseCaseHover] = useState<number | null>(null);
+
   const useCases = [
     {
-      title: "Investment Funds",
-      desc: "Exploratory research, Deal flow, due-diligence, portfolio resources group.",
-      icon: <TrendingUp className="w-8 h-8 text-brand-primary" />,
+      title: "CORPORATIONS",
+      icon: <Building2 className="w-10 h-10 text-[#ec9324]" strokeWidth={1.5} />,
+      desc: "Connect with industry veterans for market entry strategy, supply chain optimization, and digital transformation.",
     },
     {
-      title: "Research & Consulting",
-      desc: "Project proposals, Kick-off hypothesis, Benchmarking, KOL surveys, Analysis validation.",
-      icon: <BrainCircuit className="w-8 h-8 text-brand-primary" />,
+      title: "RESEARCH & CONSULTING FIRMS",
+      icon: <Lightbulb className="w-10 h-10 text-[#ec9324]" strokeWidth={1.5} />,
+      desc: "Empower your consulting projects with precise, expert-vetted insights from global subject matter experts.",
     },
     {
-      title: "Companies",
-      desc: "Kick-starter teams, Private long-term advisors, One-time events, Board members.",
-      icon: <Users className="w-8 h-8 text-brand-primary" />,
+      title: "INVESTMENT FUNDS",
+      icon: <Coins className="w-10 h-10 text-[#ec9324]" strokeWidth={1.5} />,
+      desc: "Mitigate risks and validate investment theses with direct access to C-suite experts and industry insiders.",
+      image: "/animationimaage/Investment data-amico.svg",
     },
   ];
 
   return (
     <div ref={containerRef} className="relative">
       {/* ── HERO SECTION ── */}
-      <section className="relative min-h-[90vh] pt-20 lg:pt-28 pb-10 px-10 lg:px-24 overflow-hidden w-full">
-        <BackgroundParticles />
-        
+      <section className="relative min-h-[70vh] pt-20 lg:pt-28 pb-10 px-10 lg:px-24 overflow-hidden w-full">
+        {/* <BackgroundParticles /> */}
+        {/* <ParticleHero /> */}
 
-        <div className="relative z-10 grid lg:grid-cols-12 gap-12 items-center mt-20">
+        <div className="relative z-10 grid lg:grid-cols-12 gap-12 items-center mt-10">
           {/* Left Content */}
-          <motion.div 
-            style={{ 
+          <motion.div
+            style={{
               y: useTransform(scrollYProgress, [0, 0.4], [0, 120]),
-              opacity: useTransform(scrollYProgress, [0, 0.3], [1, 0])
+              opacity: useTransform(scrollYProgress, [0, 0.3], [1, 0]),
             }}
             className="col-span-12 lg:col-span-5 flex flex-col items-start relative"
           >
@@ -115,7 +253,7 @@ export default function Home() {
             </motion.div>
 
             <div className="mb-4">
-              <h1 className="text-[clamp(2.5rem,7vw,4.5rem)] font-semibold tracking-tight leading-[0.95]">
+              <h1 className="text-[clamp(1.5rem,4vw,2.5rem)] font-semibold tracking-tight leading-[0.95]">
                 Get <span className="text-brand-primary italic font-serif">On-Demand</span> Expertise.
               </h1>
             </div>
@@ -126,7 +264,8 @@ export default function Home() {
               transition={{ delay: 1, duration: 0.8 }}
               className="mt-2 max-w-xl text-lg opacity-60 leading-relaxed text-brand-text"
             >
-              Phone calls · Personal advisors · On-site workshops · Knowledge tours · Consultants · SOW employees. One panel, infinite expertise.
+              Phone calls · Personal advisors · On-site workshops · Knowledge tours · Consultants · SOW employees. One
+              panel, infinite expertise.
             </motion.p>
 
             <motion.div
@@ -153,34 +292,32 @@ export default function Home() {
               {[
                 ["12k+", "Vetted experts"],
                 ["48 hr", "Avg. match time"],
-                ["140+", "Industries covered"]
+                ["140+", "Industries covered"],
               ].map(([val, label]) => (
                 <div key={label} className="flex flex-col">
                   <div className="text-4xl font-bold text-brand-primary mb-1 font-playfair">{val}</div>
-                  <div className="uppercase tracking-[0.2em] font-bold text-[10px] opacity-40 text-brand-text">{label}</div>
+                  <div className="uppercase tracking-[0.2em] font-bold text-[10px] opacity-40 text-brand-text">
+                    {label}
+                  </div>
                 </div>
               ))}
             </motion.div>
           </motion.div>
 
-          {/* Right Video Mockup */}
-          {/* <div className="col-span-12 lg:col-span-7 relative mt-12 lg:mt-0">
+          {/* Right side - Refined Globe Storyboard */}
+          <div className="col-span-12 lg:col-span-7 relative mt-12 lg:mt-0 flex items-center justify-center">
             <motion.div
-              initial={{ opacity: 0, y: 40, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: 0.8, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              className="relative overflow-hidden rounded-[2.5rem] border border-black/10 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.4)] mb-12"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.8, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              className="w-full"
             >
-              <video autoPlay muted loop playsInline className="aspect-video h-full w-full object-cover">
-                <source src="/animationimaage/video1.mp4" type="video/mp4" />
-              </video>
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+              <GlobeStoryboard />
             </motion.div>
-            <div className="absolute -inset-20 bg-brand-primary/10 blur-[120px] -z-10 pointer-events-none opacity-30" />
-          </div> */}
+          </div>
         </div>
 
-        <motion.div 
+        <motion.div
           style={{ opacity: scrollIndicatorOpacity }}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20"
         >
@@ -189,40 +326,49 @@ export default function Home() {
       </section>
 
       {/* ── ABOUT SECTION ── */}
-      <motion.section 
-        id="services" 
-        style={{ opacity, scale }}
-        className="mt-24 grid lg:grid-cols-2 gap-20 items-center px-10 lg:px-24"
-      >
+      <ScrollZoomWrapper className="mt-24 grid lg:grid-cols-2 gap-20 items-center px-10 lg:px-24">
         <div className="reveal-left relative">
           <div className="w-20 h-1 mb-8 bg-brand-primary" />
-          <TextGenerateEffect 
-            words="Know More About Us" 
-            className="text-3xl font-bold tracking-[0.25em] uppercase mb-8 text-brand-text" 
+          <TextGenerateEffect
+            words="Know More About Us"
+            className="text-lg font-bold tracking-[0.25em] uppercase mb-6 text-brand-text"
           />
           <p className="leading-relaxed text-lg mb-6 font-light text-brand-text-muted">
-            Infollion aggregates subject matter experts, independent consultants and freelancers to facilitate their access for short-term expertise to{" "}
-            <span className="text-brand-primary font-medium">companies, consulting firms and investment funds</span>. 
-            Infollion offers flexible <span className="text-brand-primary font-medium">modes of engagement</span> to reach out to experts on its panel.
+            Infollion aggregates subject matter experts, independent consultants and freelancers to facilitate their
+            access for short-term expertise to{" "}
+            <span className="text-brand-primary font-medium">companies, consulting firms and investment funds</span>.
+            Infollion offers flexible <span className="text-brand-primary font-medium">modes of engagement</span> to
+            reach out to experts on its panel.
           </p>
           <p className="leading-relaxed text-lg font-light text-brand-text-muted">
-            It ranges from a very short phone call to a few months long project based on pre-determined statement of work. The Panel can be accessed in 3 easy steps.
+            It ranges from a very short phone call to a few months long project based on pre-determined statement of
+            work. The Panel can be accessed in 3 easy steps.
           </p>
         </div>
 
-        <div 
+        <div
           className="reveal-right rounded-[40px] p-8 flex flex-col gap-6 shadow-2xl"
           style={{ background: "rgba(255,122,48,0.03)", border: "1px solid rgba(255,122,48,0.1)" }}
         >
           {[
-            { title: "Expert Network", desc: "10,000+ verified experts across 150+ industries globally.", icon: <Globe className="text-brand-primary w-7 h-7" /> },
-            { title: "AI Matching", desc: "Our algorithms match your brief to the right expert in under 48 hours.", icon: <Zap className="text-brand-primary w-7 h-7" /> },
-            { title: "Compliant", desc: "GDPR-compliant processes, NDAs, and secure communications.", icon: <Shield className="text-brand-primary w-7 h-7" /> }
-          ].map(item => (
+            {
+              title: "Expert Network",
+              desc: "10,000+ verified experts across 150+ industries globally.",
+              icon: <Globe className="text-brand-primary w-7 h-7" />,
+            },
+            {
+              title: "AI Matching",
+              desc: "Our algorithms match your brief to the right expert in under 48 hours.",
+              icon: <Zap className="text-brand-primary w-7 h-7" />,
+            },
+            {
+              title: "Compliant",
+              desc: "GDPR-compliant processes, NDAs, and secure communications.",
+              icon: <Shield className="text-brand-primary w-7 h-7" />,
+            },
+          ].map((item) => (
             <div key={item.title} className="flex items-start gap-4">
-              <div className="p-3 rounded-xl flex-shrink-0 bg-brand-primary/10">
-                {item.icon}
-              </div>
+              <div className="p-3 rounded-xl flex-shrink-0 bg-brand-primary/10">{item.icon}</div>
               <div>
                 <h4 className="font-bold text-sm uppercase tracking-wider mb-1 text-brand-text">{item.title}</h4>
                 <p className="text-sm leading-relaxed text-brand-text-muted">{item.desc}</p>
@@ -230,99 +376,177 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </motion.section>
+      </ScrollZoomWrapper>
 
-      {/* ── STEPS SECTION ── */}
-      <section className="mt-24 relative px-10 lg:px-24">
-        <div className="grid md:grid-cols-3 gap-12 relative">
-          <div className="absolute top-12 left-0 w-full h-[1px] hidden md:block opacity-10 bg-brand-text" />
-          {[
-            { step: "DEFINE", icon: <Search />, text: "Looking for deep subject matter expertise? Let us know the knowledge gap you face." },
-            { step: "REQUEST", icon: <FileText />, text: "Send a request and we'll share the most relevant expert profiles with pricing & past performance." },
-            { step: "CHOOSE", icon: <SquareCheckBig />, text: "Choose the duration and mode of engagement from our flexible & customizable models." }
-          ].map((item, i) => (
-            <div key={item.step} className={`reveal-flip-up stagger-${i+1} relative z-10 flex flex-col items-center text-center`}>
-              <div 
-                className="w-24 h-24 rounded-full flex items-center justify-center mb-8 transition-all group bg-brand-bg border-2 border-brand-primary/20 text-brand-primary hover:border-brand-primary"
-              >
-                {item.icon}
-              </div>
-              <h3 className="text-sm font-bold tracking-[0.4em] uppercase mb-4 text-brand-text">{item.step}</h3>
-              <p className="text-sm leading-relaxed max-w-xs opacity-60 text-brand-text">{item.text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* ── STEPS SECTION (ANIMATED TIMELINE) ── */}
+      <TimelineSteps />
 
       {/* ── MODES SECTION ── */}
-      <section id="experts" className="mt-24 text-center relative px-10 lg:px-24">
-        <h2 className="reveal text-2xl font-bold tracking-[0.4em] uppercase mb-6 relative z-10 text-brand-text">
-          Modes of Engagement
-        </h2>
-        <div className="reveal stagger-1 w-16 h-1 mx-auto mb-16 relative z-10 bg-brand-primary" />
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
-          {[
-            { label: "Calls", icon: <Phone className="w-6 h-6" />, desc: "Rapid telephonic consultations." },
-            { label: "Sit-Ins", icon: <Users className="w-6 h-6" />, desc: "Interactive deep-dive workshops." },
-            { label: "Tours", icon: <Plane className="w-6 h-6" />, desc: "Field research and site visits." },
-            { label: "PexPanel", icon: <UserPlus className="w-6 h-6" />, desc: "Long-term professional engagement." }
-          ].map((item, i) => (
-            <motion.div 
-              key={i}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.1 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -8 }}
-              className="p-8 rounded-3xl text-left group transition-all bg-brand-primary/[0.02] border border-brand-primary/[0.05] hover:border-brand-primary/20"
-            >
-              <div className="mb-6 transition-transform group-hover:scale-110 group-hover:rotate-12 duration-500 text-brand-primary">
-                {item.icon}
-              </div>
-              <h4 className="font-bold uppercase tracking-widest mb-3 text-sm text-brand-text">{item.label}</h4>
-              <p className="text-xs leading-relaxed opacity-60 text-brand-text">{item.desc}</p>
-            </motion.div>
-          ))}
+      <ScrollZoomWrapper id="experts" className="mt-32 text-center relative px-10 lg:px-24">
+        <div className="flex flex-col items-center mb-10">
+          <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-brand-primary mb-3">
+            Modes of Engagement
+          </span>
+          <div className="w-12 h-[1px] bg-brand-primary/30 mb-6" />
+          <h2 className="text-base md:text-lg font-playfair italic text-brand-text leading-tight">
+            How would you like to engage?
+          </h2>
         </div>
-      </section>
+
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10 py-6"
+          style={{ perspective: "1500px" }}
+        >
+          {[
+            { label: "Calls", icon: <Phone className="w-6 h-6" />, desc: "Expert consultations on precise agendas." },
+            { label: "Sit-ins", icon: <Users className="w-6 h-6" />, desc: "Private workshops & masterclasses." },
+            { label: "Tours", icon: <Plane className="w-6 h-6" />, desc: "Field research & site visits." },
+            { label: "PexPanel", icon: <UserPlus className="w-6 h-6" />, desc: "On-demand expert team members." },
+          ].map((item, i) => {
+            const [localHover, setLocalHover] = useState(false);
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, rotateY: -30, x: 50, z: -200 }}
+                whileInView={{ opacity: 1, rotateY: 0, x: 0, z: 0 }}
+                transition={{
+                  duration: 1,
+                  delay: i * 0.15,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                viewport={{ once: true }}
+                whileHover={{
+                  y: -10,
+                  rotateY: 10,
+                  transition: { duration: 0.4 },
+                }}
+                onMouseEnter={() => setLocalHover(true)}
+                onMouseLeave={() => setLocalHover(false)}
+                className="relative"
+                style={{ transformStyle: "preserve-3d" }}
+              >
+                <MovingBorder isHovered={localHover} duration={3500} borderRadius="2rem">
+                  <div className="group p-8 h-full rounded-[2rem] bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/10 backdrop-blur-xl shadow-lg transition-all duration-500 hover:shadow-[0_20px_40px_rgba(236,147,36,0.15)] hover:border-brand-primary/40 text-left relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    
+                    <div className="mb-6 text-brand-primary transition-transform group-hover:scale-110 group-hover:rotate-12 duration-500">
+                      {item.icon}
+                    </div>
+                    <h4 className="text-sm font-bold uppercase tracking-widest text-brand-text mb-3">{item.label}</h4>
+                    <p className="text-xs text-brand-text-muted leading-relaxed opacity-70 group-hover:opacity-100 transition-opacity">
+                      {item.desc}
+                    </p>
+                  </div>
+                </MovingBorder>
+              </motion.div>
+            );
+          })}
+        </div>
+      </ScrollZoomWrapper>
 
       {/* ── USE CASES SECTION ── */}
-      <section className="mt-24 text-center pb-24 px-10 lg:px-24">
-        <TextGenerateEffect 
-          words="Sample Use-Cases" 
-          className="reveal text-2xl font-bold tracking-[0.4em] uppercase mb-6 text-center" 
-        />
-        <div className="reveal stagger-1 w-16 h-1 mx-auto mb-20 bg-brand-primary" />
+      {/* ── USE CASES SECTION ── */}
+      <ScrollZoomWrapper className="mt-32 text-center pb-32 px-10 lg:px-24">
+        <h2 className="reveal text-lg md:text-xl font-black tracking-[0.2em] uppercase mb-6 flex justify-center gap-3 md:gap-5">
+          <span className="text-[var(--text)]">SAMPLE</span>
+          <span className="text-[#ec9324]">USE-CASES</span>
+        </h2>
+        <div className="reveal w-20 h-[3px] mx-auto mb-24 bg-[#ec9324]" />
 
-        <motion.div 
-          variants={{
-            hidden: { opacity: 0 },
-            show: { opacity: 1, transition: { staggerChildren: 0.15 } }
-          }}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="grid md:grid-cols-3 gap-8"
+        <div
+          className="flex flex-col md:flex-row justify-center items-center gap-12 lg:gap-16"
+          style={{ perspective: "1500px" }}
         >
-          {useCases.map((item, i) => (
-            <motion.div 
-              key={i}
-              variants={{
-                hidden: { opacity: 0, y: 30, scale: 0.95 },
-                show: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 100, damping: 20 } }
-              }}
-              className="p-10 rounded-[3rem] flex flex-col items-center group cursor-default transition-all bg-brand-primary/[0.02] border border-brand-primary/[0.05] hover:border-brand-primary/20"
-            >
-              <div className="w-24 h-24 rounded-full flex items-center justify-center mb-10 group-hover:rotate-3 group-hover:scale-105 transition-all duration-500 shadow-lg bg-white border border-brand-primary/10">
-                {item.icon}
-              </div>
-              <h3 className="text-lg font-bold uppercase tracking-widest mb-6 text-brand-text">{item.title}</h3>
-              <p className="text-sm leading-relaxed opacity-60 text-brand-text">{item.desc}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-      </section>
+          {useCases.map((item, i) => {
+            const isActive = activeUseCase === i;
+            return (
+              <motion.div
+                key={i}
+                layout
+                transition={{
+                  layout: { type: "spring", stiffness: 260, damping: 25 },
+                }}
+                className={`flex flex-col items-center group cursor-pointer transition-all duration-500 ${isActive ? "md:scale-105 z-20" : "opacity-80 hover:opacity-100"}`}
+                style={{ transformStyle: "preserve-3d" }}
+              >
+                <motion.div 
+                  layout
+                  transition={{
+                    layout: { type: "spring", stiffness: 260, damping: 25 }
+                  }}
+                  initial={{ opacity: 0, rotateX: 60, y: 150, z: -500, scale: 0.8 }}
+                  whileInView={{ opacity: 1, rotateX: 0, y: 0, z: 0, scale: 1 }}
+                  viewport={{ once: true }}
+                  onMouseEnter={() => setUseCaseHover(i)}
+                  onMouseLeave={() => setUseCaseHover(null)}
+                  onClick={() => setActiveUseCase(isActive ? null : i)}
+                  className="relative"
+                >
+                  <MovingBorder 
+                    isHovered={isActive || useCaseHover === i} 
+                    duration={isActive ? 2500 : 4000} 
+                    borderRadius={isActive ? "2.5rem" : "2rem"}
+                  >
+                    <div
+                      className={`${isActive ? 'w-64 md:w-80 h-auto p-10' : 'w-32 h-32 md:w-36 md:h-36'} rounded-[2rem] md:rounded-[2.5rem] bg-[#1a1a1a] dark:bg-[var(--card-bg)] border border-black/5 dark:border-[var(--border)] flex flex-col items-center justify-center shadow-2xl transition-all duration-700 ${!isActive && 'group-hover:-translate-y-4 group-hover:rotate-x-12 group-hover:shadow-[0_20px_40px_-10px_rgba(236,147,36,0.3)]'} ${isActive ? 'border-[#ec9324]/50 shadow-[0_0_50px_rgba(236,147,36,0.2)]' : 'group-hover:border-[#ec9324]/50'}`}
+                    >
+                      <div className={`transition-transform duration-700 ${!isActive && 'group-hover:scale-110'} ${isActive ? 'mb-6' : ''}`}>
+                        {item.icon}
+                      </div>
+
+                      <AnimatePresence>
+                        {isActive && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            className="text-center"
+                          >
+                            <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-[#ec9324] mb-4">
+                              {item.title}
+                            </h3>
+                            {item.title === "INVESTMENT FUNDS" ? (
+                              <div className="w-48 h-48 mx-auto mb-6">
+                                <AssemblingInvestmentIllustration />
+                              </div>
+                            ) : (
+                              item.image && (
+                                <motion.img 
+                                  initial={{ opacity: 0, scale: 0.9 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  src={item.image} 
+                                  alt={item.title} 
+                                  className="w-40 h-40 mx-auto mb-6 drop-shadow-xl" 
+                                />
+                              )
+                            )}
+                            <p className="text-xs text-[var(--text-muted)] leading-relaxed italic px-4">
+                              "{item.desc}"
+                            </p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </MovingBorder>
+                </motion.div>
+
+                {!isActive && (
+                  <motion.h3
+                    layout
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 0.3 + i * 0.1 }}
+                    viewport={{ once: true }}
+                    className="text-[9px] md:text-[11px] font-bold uppercase tracking-[0.3em] text-[var(--text-muted)] group-hover:text-[var(--text)] transition-colors duration-500 mt-6 md:mt-8"
+                  >
+                    {item.title}
+                  </motion.h3>
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
+      </ScrollZoomWrapper>
     </div>
   );
 }
