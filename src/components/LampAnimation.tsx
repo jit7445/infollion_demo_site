@@ -29,8 +29,7 @@ export function LampAnimation() {
 
   return (
     <div
-      className="pointer-events-none z-0 flex flex-col items-center"
-      style={{ width: 1000, paddingTop: 40 }}
+      className="pointer-events-none z-0 flex flex-col items-center w-screen md:w-[1000px] pt-10"
       aria-hidden
     >
       <motion.div 

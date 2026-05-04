@@ -58,7 +58,7 @@ function MagneticButton({
   return (
     <motion.a
       href={href}
-      className={`relative inline-flex items-center gap-3 rounded-full px-10 py-5 font-bold transition-all duration-300 text-sm uppercase tracking-widest ${
+      className={`relative inline-flex items-center gap-3 rounded-full px-6 py-4 md:px-10 md:py-5 font-bold transition-all duration-300 text-xs md:text-sm uppercase tracking-widest ${
         variant === "primary"
           ? "bg-[#ec9324] text-white shadow-[0_20px_40px_-10px_rgba(255,122,48,0.3)] hover:scale-105 active:scale-95"
           : "border-2 border-[#ec9324]/30 text-[#ec9324] hover:bg-[#ec9324]/5 hover:border-[#ec9324]/60"
@@ -88,7 +88,7 @@ function TimelineStepCard({ step, isRight = false }: { step: any; isRight?: bool
     >
       <MovingBorder isHovered={isHovered} duration={4000} borderRadius="2rem">
         <div
-          className={`p-8 md:p-10 rounded-[2rem] bg-black/[0.03] dark:bg-white/[0.02] border border-black/5 dark:border-white/10 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] relative overflow-hidden group transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(236,147,36,0.15)] ${isRight ? "text-right" : "text-left"}`}
+          className={`p-6 md:p-10 rounded-[2rem] bg-black/[0.03] dark:bg-white/[0.02] border border-black/5 dark:border-white/10 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] relative overflow-hidden group transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(236,147,36,0.15)] ${isRight ? "text-right" : "text-left"}`}
         >
           <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
           <span className="text-[10px] tracking-[0.2em] text-[var(--text-muted)] mb-3 block uppercase font-mono relative z-10">
@@ -135,32 +135,38 @@ function TimelineSteps() {
   return (
     <section ref={ref} className="relative mt-32 mb-16 max-w-4xl mx-auto px-6 py-12">
       {/* Background Dim Line */}
-      <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-[var(--border)] -translate-x-1/2" />
+      <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-[1px] bg-[var(--border)] -translate-x-1/2" />
 
       {/* Animated Colored Line */}
       <motion.div
-        className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-[#ec9324] -translate-x-1/2 origin-top"
+        className="absolute left-8 md:left-1/2 top-0 bottom-0 w-[1px] bg-[#ec9324] -translate-x-1/2 origin-top"
         style={{ scaleY: scrollYProgress, boxShadow: "0 0 15px 2px rgba(236,147,36,0.6)" }}
       />
 
-      <div className="flex flex-col gap-32">
+      <div className="flex flex-col gap-20 md:gap-32">
         {steps.map((step, i) => {
           const isEven = i % 2 === 0;
           return (
-            <div key={step.id} className="relative flex items-center w-full">
-              {/* Left Content */}
-              <div className={`w-1/2 pr-12 md:pr-16 ${!isEven ? "opacity-0" : "text-left"}`}>
+            <div key={step.id} className="relative flex flex-col md:flex-row items-start md:items-center w-full">
+              {/* Left Content (Desktop Only) */}
+              <div className={`hidden md:block w-1/2 pr-16 ${!isEven ? "opacity-0" : "text-left"}`}>
                 {isEven && <TimelineStepCard step={step} />}
               </div>
 
-              {/* Center Node */}
-              <div className="absolute left-1/2 -translate-x-1/2 w-14 h-14 rounded-full border border-[#ec9324] flex items-center justify-center z-10 bg-[var(--bg2)] shadow-[0_0_30px_rgba(236,147,36,0.3)] dark:shadow-[0_0_40px_rgba(236,147,36,0.4)]">
-                <div className="text-[#ec9324]">{step.icon}</div>
+              {/* Center Node / Left Node on Mobile */}
+              <div className="absolute left-8 md:left-1/2 -translate-x-1/2 w-10 h-10 md:w-14 md:h-14 rounded-full border border-[#ec9324] flex items-center justify-center z-10 bg-[var(--bg2)] shadow-[0_0_20px_rgba(236,147,36,0.3)]">
+                <div className="text-[#ec9324] scale-75 md:scale-100">{step.icon}</div>
               </div>
 
-              {/* Right Content */}
-              <div className={`w-1/2 pl-12 md:pl-16 ${isEven ? "opacity-0" : "text-right flex flex-col items-end"}`}>
-                {!isEven && <TimelineStepCard step={step} isRight />}
+              {/* Mobile Content & Desktop Right Content */}
+              <div className={`w-full md:w-1/2 pl-16 md:pl-16 ${isEven ? "md:opacity-0" : "text-left md:text-right flex flex-col md:items-end"}`}>
+                {/* On mobile, show all steps here. On desktop, only show odd steps here. */}
+                <div className="block md:hidden">
+                    <TimelineStepCard step={step} isRight={false} />
+                </div>
+                <div className="hidden md:block">
+                    {!isEven && <TimelineStepCard step={step} isRight />}
+                </div>
               </div>
             </div>
           );
@@ -234,24 +240,22 @@ export default function Home() {
   return (
     <div ref={containerRef} className="relative">
       {/* ── HERO SECTION ── */}
-      <section className="relative min-h-[70vh] pt-20 lg:pt-28 pb-10 px-10 lg:px-24 overflow-hidden w-full">
+      <section className="relative min-h-[60vh] md:min-h-[70vh] pt-12 md:pt-28 pb-10 px-6 md:px-24 overflow-hidden w-full">
         {/* <BackgroundParticles /> */}
         {/* <ParticleHero /> */}
 
-        <div className="relative z-10 grid lg:grid-cols-12 gap-12 items-center mt-10">
+        <div className="relative z-10 grid lg:grid-cols-12 gap-8 lg:gap-12 items-center mt-10">
           {/* Left Content */}
           <motion.div
             style={{
               y: useTransform(scrollYProgress, [0, 0.4], [0, 120]),
               opacity: useTransform(scrollYProgress, [0, 0.3], [1, 0]),
             }}
-            className="col-span-12 lg:col-span-5 flex flex-col items-start relative"
+            className="col-span-12 lg:col-span-5 flex flex-col items-center text-center relative"
           >
             {/* Lamp Pendulum Illustration */}
-            <div className="pointer-events-none absolute -top-[350px] left-0 right-0 z-30 flex justify-center lg:justify-start lg:pl-[25%]">
-              <div className="w-0 flex justify-center">
-                <LampAnimation />
-              </div>
+            <div className="pointer-events-none absolute -top-[350px] left-0 right-0 z-30 flex justify-center lg:justify-start lg:-left-60">
+              <LampAnimation />
             </div>
 
             <motion.div
@@ -267,7 +271,7 @@ export default function Home() {
             </motion.div>
 
             <div className="mb-4">
-              <h1 className="text-[clamp(1.5rem,4vw,2.5rem)] font-semibold tracking-tight leading-[0.95]">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.1] md:leading-[0.95]">
                 Get <span className="text-brand-primary italic font-serif">On-Demand</span> Expertise.
               </h1>
             </div>
@@ -276,7 +280,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.8 }}
-              className="mt-2 max-w-xl text-lg opacity-60 leading-relaxed text-brand-text"
+              className="mt-2 max-w-xl text-lg opacity-60 leading-relaxed text-brand-text mx-auto"
             >
               Phone calls · Personal advisors · On-site workshops · Knowledge tours · Consultants · SOW employees. One
               panel, infinite expertise.
@@ -286,7 +290,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.2, duration: 0.8 }}
-              className="mt-8 flex flex-wrap items-center gap-6"
+              className="mt-8 flex flex-wrap items-center justify-center gap-6"
             >
               <MagneticButton href="#request" variant="primary">
                 Request Experts <ArrowRight className="h-5 w-5 ml-1" />
@@ -301,16 +305,16 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.6, duration: 1 }}
-              className="mt-12 flex flex-wrap gap-x-16 gap-y-6"
+              className="mt-12 flex flex-wrap justify-center gap-x-10 md:gap-x-16 gap-y-6"
             >
               {[
                 ["12k+", "Vetted experts"],
                 ["48 hr", "Avg. match time"],
                 ["140+", "Industries covered"],
               ].map(([val, label]) => (
-                <div key={label} className="flex flex-col">
-                  <div className="text-4xl font-bold text-brand-primary mb-1 font-playfair">{val}</div>
-                  <div className="uppercase tracking-[0.2em] font-bold text-[10px] opacity-40 text-brand-text">
+                <div key={label} className="flex flex-col items-center">
+                  <div className="text-3xl md:text-4xl font-bold text-brand-primary mb-1 font-playfair">{val}</div>
+                  <div className="uppercase tracking-[0.2em] font-bold text-[8px] md:text-[10px] opacity-40 text-brand-text">
                     {label}
                   </div>
                 </div>
@@ -333,14 +337,14 @@ export default function Home() {
 
         <motion.div
           style={{ opacity: scrollIndicatorOpacity }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-50"
         >
           <span className="text-[10px] uppercase tracking-[0.5em] font-bold opacity-40">Scroll ↓</span>
         </motion.div>
       </section>
 
       {/* ── ABOUT SECTION ── */}
-      <ScrollZoomWrapper className="mt-24 grid lg:grid-cols-2 gap-20 items-center px-10 lg:px-24">
+      <ScrollZoomWrapper className="mt-24 grid lg:grid-cols-2 gap-20 items-center px-6 md:px-24">
         <div className="reveal-left relative">
           <div className="w-20 h-1 mb-8 bg-brand-primary" />
           <TextGenerateEffect
@@ -396,7 +400,7 @@ export default function Home() {
       <TimelineSteps />
 
       {/* ── MODES SECTION ── */}
-      <ScrollZoomWrapper id="experts" className="mt-32 text-center relative px-10 lg:px-24">
+      <ScrollZoomWrapper id="experts" className="mt-32 text-center relative px-6 md:px-24">
         <div className="flex flex-col items-center mb-10">
           <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-brand-primary mb-3">
             Modes of Engagement
@@ -465,7 +469,7 @@ export default function Home() {
       </ScrollZoomWrapper>
 
       {/* ── USE CASES SECTION ── */}
-      <ScrollZoomWrapper className="mt-32 text-center pb-32 px-10 lg:px-24 relative">
+      <ScrollZoomWrapper className="mt-32 text-center pb-32 px-6 md:px-24 relative">
         {/* Orbital Dot from Image 1 */}
         <div className="absolute -top-12 left-10 lg:left-24 w-12 h-12 flex items-center justify-center pointer-events-none">
           <div className="w-2 h-2 bg-[#ec9324] rounded-full relative z-10 shadow-[0_0_15px_rgba(236,147,36,1)]" />

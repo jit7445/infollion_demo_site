@@ -63,17 +63,14 @@ function HeroBall({ ball }: { ball: any }) {
       }}
     >
       <div 
+        className="w-[100px] h-[100px] md:w-[140px] md:h-[140px] rounded-full flex items-center justify-center relative overflow-hidden transition-all duration-500 group-hover:shadow-[0_20px_50px_rgba(236,147,36,0.3)]"
         style={{
-          width: ball.size,
-          height: ball.size,
-          borderRadius: "50%",
           background: `radial-gradient(circle at 35% 35%, #fff 0%, #fff 5%, #f5e4cd 20%, #e6a77d 50%, #fb8b47 100%)`,
           boxShadow: ballShadow,
         }}
-        className="flex items-center justify-center relative overflow-hidden transition-all duration-500 group-hover:shadow-[0_20px_50px_rgba(236,147,36,0.3)]"
       >
         <div className="absolute inset-0 bg-brand-primary/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-        <span className={`${cormorant.className} text-xl md:text-2xl font-medium text-[#263238] italic text-center px-4 leading-tight relative z-10`}>
+        <span className={`${cormorant.className} text-base md:text-2xl font-medium text-[#263238] italic text-center px-4 leading-tight relative z-10`}>
           {ball.label}
         </span>
       </div>

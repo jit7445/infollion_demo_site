@@ -170,8 +170,8 @@ function UseCaseSection({
       <div ref={sectionRef}>
         {/* Header Split */}
         <div className="grid lg:grid-cols-2 gap-12 items-end mb-8">
-          <div className={`relative ${isReversed ? 'lg:order-2 text-right' : ''}`}>
-            <div className={`text-4xl lg:text-6xl font-serif leading-tight flex flex-wrap items-baseline gap-x-4 ${isReversed ? 'justify-end' : ''}`}>
+          <div className={`relative ${isReversed ? 'lg:order-2 lg:text-right' : ''}`}>
+            <div className={`text-4xl lg:text-6xl font-serif leading-tight flex flex-wrap items-baseline gap-x-4 ${isReversed ? 'lg:justify-end' : ''}`}>
               <ScrollTextReveal 
                 text={category.title} 
                 as="h2" 
@@ -191,7 +191,7 @@ function UseCaseSection({
               whileInView={{ scale: 1, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
-              className={`absolute -top-4 w-10 h-10 flex items-center justify-center ${isReversed ? '-left-4' : '-right-4'}`}
+              className={`absolute -top-4 w-10 h-10 flex items-center justify-center ${isReversed ? 'lg:-left-4 -right-4' : '-right-4'}`}
             >
               <div className="w-2 h-2 bg-brand-primary rounded-full relative z-10" />
               <div className="absolute inset-0 bg-brand-primary/20 rounded-full animate-ping scale-75" />
@@ -204,7 +204,7 @@ function UseCaseSection({
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-              className={`text-sm lg:text-base opacity-50 max-w-lg leading-relaxed ${isReversed ? 'ml-auto text-right' : ''}`}
+              className={`text-sm lg:text-base opacity-50 max-w-lg leading-relaxed ${isReversed ? 'lg:ml-auto lg:text-right' : ''}`}
             >
               {category.desc}
             </motion.p>

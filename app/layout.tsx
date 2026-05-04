@@ -6,7 +6,7 @@ import Image from "next/image";
 import ScrollAnimations from "@/components/ScrollAnimations";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Phone, MapPin, Linkedin, Twitter, ChevronDown, Sun, Moon } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Twitter, ChevronDown, Sun, Moon, Menu, X } from "lucide-react";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const spaceMono = Space_Mono({ weight: ["400", "700"], subsets: ["latin"], variable: "--font-space-mono" });
@@ -43,6 +43,7 @@ export default function RootLayout({
 
   const [isNavigating, setIsNavigating] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Manual navigation handler
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -72,7 +73,7 @@ export default function RootLayout({
           {/* ── Floating Pill Navbar ── */}
           <div className="fixed top-5 left-0 w-full z-[200] flex justify-center px-4">
             <nav
-              className={`nav-pill relative flex items-center gap-1 px-6 rounded-full transition-all duration-500 ${
+              className={`nav-pill relative flex items-center justify-between gap-1 px-4 md:px-6 rounded-full transition-all duration-500 ${
                 scrolled 
                   ? "shadow-2xl bg-brand-bg/80 border border-black/10 backdrop-blur-md py-0.5" 
                   : "bg-transparent border-transparent backdrop-blur-none shadow-none py-1 mt-2"
@@ -80,20 +81,20 @@ export default function RootLayout({
               style={{ maxWidth: 840, width: "100%" }}
             >
               {/* Logo */}
-              <Link href="/" onClick={(e) => handleNavClick(e, "/")} className="flex items-center mr-6 flex-shrink-0 relative z-10">
+              <Link href="/" onClick={(e) => { handleNavClick(e, "/"); setIsMobileMenuOpen(false); }} className="flex items-center mr-0 md:mr-6 flex-shrink-0 relative z-[210]">
                 <Image
                   src="/images/logo_hd.png"
                   alt="Infollion"
                   width={110}
                   height={32}
-                  className="object-contain"
+                  className="object-contain w-[90px] md:w-[110px]"
                   style={{ transition: "filter 0.4s" }}
                   priority
                 />
               </Link>
 
-              {/* Links */}
-              <div className="flex items-center gap-2 flex-1 justify-center relative z-10">
+              {/* Desktop Links */}
+              <div className="hidden md:flex items-center gap-2 flex-1 justify-center relative z-10">
                 {NAV_LINKS.map((l, i) => (
                   <Link
                     key={l.label}
@@ -136,19 +137,58 @@ export default function RootLayout({
                 ))}
               </div>
 
-              {/* Theme Toggle */}
-              <button
-                onClick={toggleTheme}
-                onMouseEnter={() => setHoveredIndex(null)}
-                aria-label="Toggle theme"
-                className="ml-2 flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all relative z-10"
-                style={{
-                  background: dark ? "rgba(255,122,48,0.15)" : "rgba(0,0,0,0.06)",
-                  color: dark ? "#ec9324" : "var(--text-muted)",
-                }}
-              >
-                {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              </button>
+              <div className="flex items-center gap-2 relative z-[210]">
+                {/* Theme Toggle */}
+                <button
+                  onClick={toggleTheme}
+                  onMouseEnter={() => setHoveredIndex(null)}
+                  aria-label="Toggle theme"
+                  className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all"
+                  style={{
+                    background: dark ? "rgba(255,122,48,0.15)" : "rgba(0,0,0,0.06)",
+                    color: dark ? "#ec9324" : "var(--text-muted)",
+                  }}
+                >
+                  {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                </button>
+
+                {/* Mobile Menu Toggle */}
+                <button
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="md:hidden flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all bg-black/5 dark:bg-white/5"
+                  style={{ color: isMobileMenuOpen ? "#ec9324" : "var(--text)" }}
+                >
+                  {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                </button>
+              </div>
+
+              {/* Mobile Menu Overlay */}
+              <AnimatePresence>
+                {isMobileMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                    className="absolute top-full left-0 right-0 mt-4 p-4 rounded-3xl bg-brand-bg/95 border border-black/10 dark:border-white/10 backdrop-blur-2xl shadow-2xl z-[200] flex flex-col gap-2 overflow-hidden"
+                  >
+                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#ec9324] to-transparent opacity-50" />
+                    {NAV_LINKS.map((l, i) => (
+                      <Link
+                        key={l.label}
+                        href={l.href}
+                        onClick={(e) => {
+                          handleNavClick(e, l.href);
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="px-6 py-4 rounded-2xl text-base font-bold transition-all duration-300 hover:bg-brand-primary/10 hover:text-brand-primary active:scale-[0.98] border border-transparent hover:border-brand-primary/20"
+                        style={{ color: "var(--text)" }}
+                      >
+                        {l.label}
+                      </Link>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </nav>
           </div>
 

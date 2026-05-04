@@ -5,7 +5,7 @@ import * as THREE from "three";
 // @ts-ignore
 import ThreeGlobe from "three-globe";
 // @ts-ignore
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 /* ── Narrative Drawing Helpers ── */
 
@@ -316,8 +316,8 @@ export function GlobeStoryboard() {
       const st = currentStage;
 
       const clientPos = { 
-        x: cx - dist * (isMobile ? 0.8 : 0.75), 
-        y: cy + dist * (isMobile ? 0.6 : 0.65) 
+        x: cx - dist * (isMobile ? 0.65 : 0.75), 
+        y: cy + dist * (isMobile ? 0.75 : 0.65) 
       };
 
       // Project 3D positions to 2D
@@ -451,8 +451,8 @@ export function GlobeStoryboard() {
         hctx.restore();
 
         if (oLogo.current) {
-          const logoS = (isMobile ? 60 : 80);
-          const sGrow = Math.max(logoS, (isMobile ? 180 : 240) - f * 2.5);
+          const logoS = (isMobile ? 50 : 80);
+          const sGrow = Math.max(logoS, (isMobile ? 140 : 240) - f * 2.5);
           const alpha = Math.min(1, f / 40);
           hctx.save();
           hctx.globalAlpha = alpha;
@@ -461,7 +461,7 @@ export function GlobeStoryboard() {
           hctx.restore();
         }
         if (f > 80) {
-          const scanR = ((f - 80) * 7) % (dist * 2.5);
+          const scanR = ((f - 80) * 7) % (dist * (isMobile ? 1.5 : 2.5));
           hctx.beginPath();
           hctx.arc(cx, cy, scanR, 0, Math.PI * 2);
           hctx.strokeStyle = colors.accent;
@@ -539,7 +539,7 @@ export function GlobeStoryboard() {
 
       cam.aspect = W / H;
       // Adjust camera distance for mobile to fit the globe nicely
-      cam.position.z = isMobile ? 500 : 360; 
+      cam.position.z = isMobile ? 520 : 360; 
       cam.updateProjectionMatrix();
       
       renderer.setSize(W, H);
@@ -563,10 +563,10 @@ export function GlobeStoryboard() {
 
   return (
     <div
-      className={`relative w-full h-[450px] md:h-[600px] lg:h-[700px] transition-all duration-1000 overflow-hidden ${isDark ? "bg-[#0A0A0A]" : "bg-[#FDFCF7]"}`}
+      className={`relative w-full h-[400px] md:h-[600px] lg:h-[700px] transition-all duration-1000 overflow-hidden ${isDark ? "bg-[#0A0A0A]" : "bg-[#FDFCF7]"}`}
       style={{
-        maskImage: "radial-gradient(circle at center, black 50%, transparent 100%)",
-        WebkitMaskImage: "radial-gradient(circle at center, black 50%, transparent 100%)"
+        maskImage: "radial-gradient(circle at center, black 85%, transparent 100%)",
+        WebkitMaskImage: "radial-gradient(circle at center, black 85%, transparent 100%)"
       }}
     >
       {/* Background Glow */}
@@ -577,7 +577,7 @@ export function GlobeStoryboard() {
       
       {/* Soft Bottom Dissolve */}
       <div
-        className={`absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t pointer-events-none z-30 ${isDark ? "from-[#0A0A0A]" : "from-[#FDFCF7]"} to-transparent opacity-80`}
+        className={`absolute bottom-0 left-0 right-0 h-16 md:h-32 bg-gradient-to-t pointer-events-none z-30 ${isDark ? "from-[#0A0A0A]" : "from-[#FDFCF7]"} to-transparent opacity-80`}
       />
     </div>
   );
